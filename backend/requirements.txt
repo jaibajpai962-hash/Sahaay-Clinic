@@ -17,7 +17,7 @@ Flask-CORS==4.0.1              # Cross-Origin Resource Sharing headers
 
 # --- Database ---
 Flask-SQLAlchemy==3.1.1        # ORM — maps Python classes to DB tables
-SQLAlchemy==2.0.52             # Core SQL toolkit (2.0.36+ required for Python 3.14)
+mysql-connector-python==8.2.0  # Core SQL toolkit (2.0.36+ required for Python 3.14)
 alembic==1.13.1                # Database migration tool
 
 # --- Authentication & Security ---
