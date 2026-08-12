@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Sahaay Clinic - offline-first rural virtual clinic prototype">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <title>Sahaay Clinic</title>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div>
+        <strong>Sahaay Clinic</strong>
+        <span>Rural care, even when the network is not.</span>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span id="networkBadge" class="status online">● Online</span>
+      <button id="roleBtn" class="ghost-btn">Role: Health Worker</button>
+    </div>
+  </header>
+
+  <div id="offlineNotice" class="offline-notice hidden">
+    <strong>Offline mode</strong>
+    <span>Your work is being saved on this device and can sync later.</span>
+  </div>
+
+  <main class="app-shell">
+    <aside class="sidebar">
+      <button class="nav-btn active" data-view="dashboard">⌂ <span>Dashboard</span></button>
+      <button class="nav-btn" data-view="intake">＋ <span>New Patient</span></button>
+      <button class="nav-btn" data-view="records">▣ <span>Patient Records</span></button>
+      <button class="nav-btn" data-view="triage">◈ <span>Sahaay Triage</span></button>
+      <button class="nav-btn" data-view="queue">☷ <span>Care Queue</span></button>
+      <button class="nav-btn" data-view="review">✓ <span>Doctor Review</span></button>
+      <div class="sidebar-note">
+        <strong>Care Gate</strong>
+        <p>AI suggestions are preliminary. A qualified doctor remains the final decision-maker.</p>
+      </div>
+    </aside>
+
+    <section class="content">
+      <div id="app"></div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Sahaay Clinic • Hackathon Prototype</span>
+    <span>Not a medical diagnosis or emergency service.</span>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
