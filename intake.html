@@ -50,9 +50,9 @@
     <div id="intake-tabs-wrapper">
       <div class="tabs">
         <button class="tab-btn active"  onclick="switchTab(this,'tab-register')">① Register</button>
-        <button class="tab-btn"         onclick="switchTab(this,'tab-vitals')">② Vitals</button>
-        <button class="tab-btn"         onclick="switchTab(this,'tab-qr')">③ QR Health ID</button>
-        <button class="tab-btn"         onclick="switchTab(this,'tab-triage')">④ AI Triage</button>
+        <button class="tab-btn" id="tab-vitals-btn" disabled onclick="switchTab(this,'tab-vitals')">② Vitals</button>
+        <button class="tab-btn" id="tab-qr-btn" disabled onclick="switchTab(this,'tab-qr')">③ QR Health ID</button>
+        <button class="tab-btn" id="tab-triage-btn" disabled onclick="switchTab(this,'tab-triage')">④ AI Triage</button>
       </div>
 
       <!-- ────────────────────────────
@@ -420,6 +420,11 @@
                 <ul id="result-recommendations" style="padding-left:20px; color:var(--text-secondary); font-size:0.9rem; line-height:2;"></ul>
               </div>
 
+              <div class="form-group" id="medicine-suggestions-box">
+                <label class="form-label">💊 Medicine / Supportive Guidance <span class="badge badge-ai-draft" style="margin-left:6px;">Doctor confirmation required</span></label>
+                <ul id="result-medicine-suggestions" style="padding-left:20px; color:var(--text-secondary); font-size:0.9rem; line-height:2;"></ul>
+              </div>
+
               <div class="form-group">
                 <label class="form-label">AI Reasoning <span class="badge badge-ai-draft" style="margin-left:6px;">⚠️ Unverified Draft</span></label>
                 <div id="result-reasoning" class="ai-reasoning-box"></div>
@@ -522,6 +527,22 @@
   let vidRecorder     = null;
   let vidChunks       = [];
 
+  // Workflow gate: Registration -> Vitals -> AI Triage.
+  // AI Triage is intentionally NOT available until a patient is registered
+  // and at least one vitals record has been saved.
+  function setWorkflowStep(step) {
+    const vitalsBtn = document.getElementById('tab-vitals-btn');
+    const qrBtn = document.getElementById('tab-qr-btn');
+    const triageBtn = document.getElementById('tab-triage-btn');
+    const registered = !!currentPatientId;
+    const vitalsSaved = !!(currentPatientId && window.__sahaayVitalsSaved);
+    if (vitalsBtn) vitalsBtn.disabled = !registered;
+    if (qrBtn) qrBtn.disabled = !registered;
+    if (triageBtn) triageBtn.disabled = !vitalsSaved;
+  }
+
+  window.__sahaayVitalsSaved = false;
+
   const SYMPTOM_OPTIONS = [
     'Fever', 'Cough', 'Headache', 'Body ache', 'Fatigue',
     'Diarrhoea', 'Vomiting', 'Nausea', 'Chest pain',
@@ -537,6 +558,7 @@
   // ──────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', async function () {
     await initApp();
+    setWorkflowStep();
     buildSymptomChecklist();
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -806,7 +828,9 @@
 
       currentPatientId   = patientId;
       currentPatientName = name;
-      showToast(`✅ Patient "${name}" registered. ID: ${patientId}`, 'success');
+      window.__sahaayVitalsSaved = false;
+      setWorkflowStep();
+      showToast(`✅ Patient "${name}" registered. ID: ${patientId}. Now record vitals.`, 'success');
 
       // QR
       generatePatientQR(patientId, 'qr-canvas');
@@ -916,13 +940,19 @@
     btn.disabled = true; btn.textContent = 'Saving…';
 
     try {
-      await updatePatientLocally({ patientId, vitals });
       if (navigator.onLine) {
-        await apiSaveVitals(patientId, vitals);
+        const serverResult = await apiSaveVitals(patientId, vitals);
+        if (!serverResult || !serverResult.success || !serverResult.storedInDatabase) {
+          throw new Error(serverResult?.message || 'Backend did not confirm database storage.');
+        }
+        await updatePatientLocally({ patientId, vitals: serverResult.vitals || vitals });
       } else {
+        await updatePatientLocally({ patientId, vitals });
         await addToOfflineQueue('save_vitals', { patientId, vitals });
       }
-      showToast('✅ Vitals saved. Proceed to AI Triage.', 'success');
+      window.__sahaayVitalsSaved = true;
+      setWorkflowStep();
+      showToast('✅ Vitals saved. AI Triage is now unlocked.', 'success');
       document.getElementById('triage-patient-id').value = patientId;
       document.querySelector('.tab-btn[onclick*="tab-triage"]').click();
     } catch (error) {
@@ -951,8 +981,25 @@
       return;
     }
 
-    const patient = await getPatientById(patientId) || {};
-    const vitals  = patient.vitals || {};
+    // Always use the server copy when online. The old flow read IndexedDB
+    // only, which could be stale or missing the just-saved vitals.
+    let patient = {};
+    try {
+      if (navigator.onLine) {
+        const serverResponse = await apiGetPatient(patientId);
+        patient = serverResponse && serverResponse.patient ? serverResponse.patient : {};
+      } else {
+        patient = await getPatientById(patientId) || {};
+      }
+    } catch (fetchError) {
+      showToast('Unable to load the registered patient/vitals. Please refresh and try again.', 'error');
+      return;
+    }
+    const vitals = patient.vitals || {};
+    if (!Object.keys(vitals).some(k => vitals[k] !== null && vitals[k] !== '' && vitals[k] !== undefined)) {
+      showToast('Vitals are required. Please complete the Vitals tab first.', 'error');
+      return;
+    }
 
     const triageData = {
       patientId,
@@ -974,15 +1021,18 @@
     document.getElementById('triage-result').classList.add('hidden');
 
     try {
-      const result = await apiSubmitAssessment(triageData);
+      let result;
+      if (navigator.onLine) {
+        result = await apiSubmitAssessment(triageData);
+        if (!result.success && !result.condition) throw new Error(result.message || 'AI assessment failed.');
+      } else {
+        const cached = await getCachedGuidance(triageData);
+        result = cached?.guidance || runOfflineTriage(triageData);
+        result = { ...result, success: true, offline: true, source: cached ? 'local_cache' : 'offline' };
+      }
 
       document.getElementById('triage-loading').classList.add('hidden');
-
-      // Accept both full success (online Gemini) AND rule-based fallback
-      // Rule-based returns success:true with condition/urgency but may lack assessmentId
-      if (!result.success && !result.condition) {
-        throw new Error(result.message || 'AI assessment failed.');
-      }
+      await saveGuidanceLocally(patientId, { ...triageData, ...result, patientId }, false);
 
       // Populate result
       document.getElementById('result-condition').textContent   = result.condition || 'Unable to determine';
@@ -1002,6 +1052,13 @@
         li.textContent = rec;
         recList.appendChild(li);
       });
+
+      const medList = document.getElementById('result-medicine-suggestions');
+      medList.innerHTML = '';
+      (result.medicine_suggestions || []).forEach(item => {
+        const li = document.createElement('li'); li.textContent = item; medList.appendChild(li);
+      });
+      document.getElementById('medicine-suggestions-box').classList.toggle('hidden', !(result.medicine_suggestions || []).length);
 
       document.getElementById('result-reasoning').textContent = result.reasoning || 'No reasoning provided.';
 
@@ -1024,7 +1081,7 @@
       // Badge
       const badge = document.getElementById('result-status-badge');
       badge.className = 'badge badge-ai-draft';
-      badge.textContent = '⚠️ AI Draft (Unverified)';
+      badge.textContent = result.source === 'gemini' ? '⚠️ Gemini AI Draft (Unverified)' : (result.source === 'local_cache' ? '📦 Cached Guidance' : '⚠️ Offline Guidance');
 
       // Store assessment ID for sendToDoctor
       document.getElementById('triage-result').dataset.assessmentId = result.assessmentId || '';
@@ -1035,7 +1092,7 @@
       if (result.refer_immediately) {
         showToast('🚨 REFER IMMEDIATELY — Critical case detected!', 'error');
       } else {
-        showToast('✅ AI assessment complete. Review and send to doctor.', 'success');
+        showToast('✅ AI assessment complete. It is automatically queued in Doctor Portal for verification.', 'success');
       }
 
     } catch (error) {
@@ -1084,6 +1141,9 @@
       populateRegisterForm(patient);
       currentPatientId   = patient.patientId || patientId;
       currentPatientName = patient.name;
+      const pv = patient.vitals || {};
+      window.__sahaayVitalsSaved = Object.keys(pv).some(k => pv[k] !== null && pv[k] !== '' && pv[k] !== undefined);
+      setWorkflowStep();
 
       document.getElementById('loaded-patient-banner').classList.remove('hidden');
       document.getElementById('loaded-patient-info').textContent =
