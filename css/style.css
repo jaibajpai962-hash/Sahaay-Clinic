@@ -349,7 +349,7 @@ small, .text-muted { color: var(--text-muted); font-size: 0.85rem; }
   gap: var(--space-sm);
 }
 
-/* .card-body { /* no extra styling needed — content flows naturally */ */
+/*.card-body { /* no extra styling needed — content flows naturally */ */
 
 .card-footer {
   margin-top: var(--space-md);
@@ -1528,3 +1528,6 @@ textarea.form-control {
 .goog-te-gadget-simple { display: none !important; }
 .goog-te-banner-frame.skiptranslate { display: none !important; }
 body { top: 0 !important; }
+
+/* Intake workflow gates: registration -> vitals -> AI triage */
+.tab-btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }

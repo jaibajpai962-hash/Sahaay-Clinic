@@ -243,6 +243,27 @@
       ],
       "title": "Fever Me Kiya Kare",
       "urgency": "moderate"
+    },
+    {
+      "_ai_generated": false,
+      "category": "Common Ailment",
+      "icon": "🏥",
+      "id": "ddgd",
+      "otc_medications": [],
+      "red_flags": [
+        "High fever (>40°C)",
+        "Difficulty breathing",
+        "Loss of consciousness"
+      ],
+      "refer_if": "Symptoms persist beyond 48 hours or any red flag sign is present.",
+      "steps": [
+        "Keep patient calm and comfortable.",
+        "Monitor vital signs (temperature, pulse, breathing).",
+        "Ensure patient is well hydrated.",
+        "If symptoms worsen or do not improve in 24 hours, seek medical attention."
+      ],
+      "title": "Ddgd",
+      "urgency": "moderate"
     }
   ]
 }
