@@ -348,6 +348,18 @@ async function apiGetDashboardStats() {
   return makeRequest('/doctor/dashboard_stats', { method: 'GET' });
 }
 
+async function apiGetCurrentDoctor() {
+  return makeRequest('/doctor/me', { method: 'GET' });
+}
+
+async function apiGetDoctorPatient(patientId) {
+  return makeRequest(`/doctor/patient/${encodeURIComponent(patientId)}`, { method: 'GET' });
+}
+
+async function apiSearchDoctorPatients(query) {
+  return makeRequest(`/doctor/patients/search?q=${encodeURIComponent(query)}`, { method: 'GET' });
+}
+
 // ============================================================
 // TELECONSULT
 // ============================================================

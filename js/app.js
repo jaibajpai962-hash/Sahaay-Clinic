@@ -58,12 +58,14 @@ function registerServiceWorker() {
  * Change DB_VERSION when you add/remove object stores (tables).
  */
 const DB_NAME    = 'SahaayClinicDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 // "Object Store" = table in IndexedDB
 const STORE_PATIENTS   = 'patients';   // stores patient records
 const STORE_QUEUE      = 'offlineQueue'; // stores pending sync records
 const STORE_SESSIONS   = 'sessions';   // stores login session
+const STORE_GUIDANCE   = 'guidanceHistory'; // online AI/doctor guidance cached locally
+const STORE_GUIDANCE_CACHE = 'guidanceCache'; // reusable offline guidance
 
 /**
  * Opens (or creates) the IndexedDB database.
@@ -109,6 +111,17 @@ function openDatabase() {
       if (!db.objectStoreNames.contains(STORE_SESSIONS)) {
         db.createObjectStore(STORE_SESSIONS, { keyPath: 'id' });
         console.log('[DB] Created "sessions" store.');
+      }
+
+      if (!db.objectStoreNames.contains(STORE_GUIDANCE)) {
+        const s = db.createObjectStore(STORE_GUIDANCE, { keyPath: 'id', autoIncrement: true });
+        s.createIndex('patientId', 'patientId', { unique: false });
+        s.createIndex('fingerprint', 'fingerprint', { unique: false });
+        s.createIndex('createdAt', 'createdAt', { unique: false });
+      }
+      if (!db.objectStoreNames.contains(STORE_GUIDANCE_CACHE)) {
+        const s = db.createObjectStore(STORE_GUIDANCE_CACHE, { keyPath: 'fingerprint' });
+        s.createIndex('updatedAt', 'updatedAt', { unique: false });
       }
     };
 
@@ -236,6 +249,120 @@ async function updatePatientLocally(updatedData) {
     request.onsuccess = () => resolve(merged);
     request.onerror   = (e) => reject(e.target.error);
   });
+}
+
+
+// ============================================================
+// OFFLINE CLINICAL GUIDANCE CACHE
+// ============================================================
+function guidanceFingerprint(data) {
+  const symptoms = Array.isArray(data?.symptoms) ? data.symptoms : [];
+  return [
+    String(data?.chiefComplaint || '').trim().toLowerCase(),
+    ...symptoms.map(s => String(s).trim().toLowerCase()).sort()
+  ].join('|').replace(/\s+/g, ' ');
+}
+
+async function saveGuidanceLocally(patientId, guidance, verified=false) {
+  const fingerprint = guidanceFingerprint(guidance);
+  const record = {
+    patientId: patientId || guidance.patientId || null,
+    fingerprint,
+    guidance: JSON.parse(JSON.stringify(guidance)),
+    verified: !!verified,
+    createdAt: new Date().toISOString(),
+    source: guidance.source || 'gemini'
+  };
+  const db = await openDatabase();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction([STORE_GUIDANCE, STORE_GUIDANCE_CACHE], 'readwrite');
+    tx.objectStore(STORE_GUIDANCE).add(record);
+    tx.objectStore(STORE_GUIDANCE_CACHE).put({
+      fingerprint,
+      guidance: record.guidance,
+      verified: record.verified,
+      updatedAt: record.createdAt
+    });
+    tx.oncomplete = async () => {
+      try {
+        if ('caches' in window) {
+          const cache = await caches.open('sahaay-guidance-json-v1');
+          const previous = await cache.match('/offline-data/sahaay-guidance.json');
+          let data = {};
+          if (previous) { try { data = await previous.json(); } catch (_) {} }
+          data[fingerprint] = { guidance: record.guidance, verified: record.verified, updatedAt: record.createdAt };
+          await cache.put('/offline-data/sahaay-guidance.json', new Response(JSON.stringify(data), {headers:{'Content-Type':'application/json'}}));
+        }
+      } catch (_) {}
+      resolve(record);
+    };
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function getCachedGuidance(data) {
+  const fingerprint = guidanceFingerprint(data);
+  if (!fingerprint) return null;
+  const db = await openDatabase();
+  return new Promise(resolve => {
+    const req = db.transaction([STORE_GUIDANCE_CACHE], 'readonly')
+      .objectStore(STORE_GUIDANCE_CACHE).get(fingerprint);
+    req.onsuccess = async () => {
+      if (req.result) return resolve(req.result);
+      try {
+        if ('caches' in window) {
+          const cache = await caches.open('sahaay-guidance-json-v1');
+          const response = await cache.match('/offline-data/sahaay-guidance.json');
+          const data = response ? await response.json() : {};
+          const item = data[fingerprint];
+          if (item) return resolve({ fingerprint, ...item });
+        }
+      } catch (_) {}
+      resolve(null);
+    };
+    req.onerror = () => resolve(null);
+  });
+}
+
+async function getLocalGuidanceHistory(patientId, limit=50) {
+  const db = await openDatabase();
+  return new Promise(resolve => {
+    const req = db.transaction([STORE_GUIDANCE], 'readonly')
+      .objectStore(STORE_GUIDANCE).index('patientId').getAll(patientId);
+    req.onsuccess = () => resolve((req.result || []).sort((a,b) => String(b.createdAt).localeCompare(String(a.createdAt))).slice(0, limit));
+    req.onerror = () => resolve([]);
+  });
+}
+
+function runOfflineTriage(data) {
+  const text = [data?.chiefComplaint, ...(data?.symptoms || [])].join(' ').toLowerCase();
+  const v = data?.vitals || {};
+  const spo2 = Number(v.spo2), temp = Number(v.temperature), bp = Number(v.bpSystolic);
+  if (Number.isFinite(spo2) && spo2 < 90) return {
+    condition:'Severe hypoxia', urgency:'critical', confidence:'High (>80%)',
+    recommendations:['Seek emergency medical care immediately.','Keep monitoring breathing and SpO₂.'],
+    medicine_suggestions:[], reasoning:'Cached offline safety rule triggered by critically low SpO₂.',
+    red_flags_present:[`SpO₂ ${spo2}%`], refer_immediately:true, source:'offline'
+  };
+  if (Number.isFinite(temp) && temp >= 40) return {
+    condition:'Very high fever', urgency:'critical', confidence:'High (>80%)',
+    recommendations:['Seek urgent medical assessment.','Hydrate if the patient is alert and able to drink.'],
+    medicine_suggestions:[], reasoning:'Cached offline safety rule triggered by very high temperature.',
+    red_flags_present:[`Temperature ${temp}°C`], refer_immediately:true, source:'offline'
+  };
+  if (text.includes('fever') || text.includes('bukhar')) return {
+    condition:'Fever / infectious illness pattern', urgency:'moderate', confidence:'Low (<50%)',
+    recommendations:['Check temperature and hydration.','Arrange doctor review, especially if fever persists or red flags appear.'],
+    medicine_suggestions:['Oral fluids/ORS when appropriate; any medicine must be confirmed by a clinician.'],
+    reasoning:'Offline guidance only; no live AI diagnosis is available.',
+    red_flags_present:[], refer_immediately:false, source:'offline'
+  };
+  return {
+    condition:'Insufficient information', urgency:'moderate', confidence:'Low (<50%)',
+    recommendations:['Record complete symptoms and vitals.','Use the online Gemini assessment when connectivity returns and send the case to a doctor.'],
+    medicine_suggestions:[], reasoning:'No matching cached guidance was found.',
+    red_flags_present:[], refer_immediately:false, source:'offline'
+  };
 }
 
 // ============================================================
@@ -638,6 +765,7 @@ function showToast(message, type = 'info') {
  * @param {string}      panelId     - The ID of the panel to show
  */
 function switchTab(clickedBtn, panelId) {
+  if (!clickedBtn || clickedBtn.disabled) return;
   // Find the <div class="tabs"> bar that contains the clicked button
   const tabsEl = clickedBtn.closest('.tabs');
   // Its sibling tab-panels live inside the same parent wrapper as the .tabs bar
