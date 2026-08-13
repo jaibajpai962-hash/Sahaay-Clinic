@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sahaay Clinic — Doctor Portal</title>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#238636" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        { pageLanguage: 'en', includedLanguages: 'hi,ta,bn,te,mr,gu,kn,ml,pa,ur,or,as,en',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false },
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+
+<body>
+
+<!-- ──────────────────────────────────────────
+     FIRST-TIME DOCTOR VERIFICATION PORTAL
+     Shown on first visit; disappears once verified.
+────────────────────────────────────────── -->
+<div id="doctor-first-time-overlay" class="doctor-verify-overlay" style="display:none;">
+  <div class="verify-modal">
+    <div style="text-align:center; margin-bottom:var(--space-lg);">
+      <div style="font-size:3rem;">👨‍⚕️</div>
+      <h2 style="margin-top:8px;">Doctor Portal Verification</h2>
+      <p class="text-muted" style="font-size:0.9rem;">You must verify your identity before accessing this portal. This is required only once.</p>
+    </div>
+
+    <form id="doctor-first-time-form" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="ft-name">Doctor / Teleconsultant Name <span class="required">*</span></label>
+          <input type="text" id="ft-name" class="form-control" placeholder="Dr. Sharma" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="ft-designation">Designation <span class="required">*</span></label>
+          <select id="ft-designation" class="form-control" required>
+            <option value="">Select designation</option>
+            <option value="General Physician">General Physician</option>
+            <option value="Medical Officer">Medical Officer</option>
+            <option value="Specialist Doctor">Specialist Doctor</option>
+            <option value="Teleconsultant">Teleconsultant</option>
+            <option value="Paediatrician">Paediatrician</option>
+            <option value="Gynaecologist">Gynaecologist</option>
+            <option value="Emergency Doctor">Emergency Doctor</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="ft-location">Location / Address <span class="required">*</span></label>
+        <textarea id="ft-location" class="form-control" rows="2" placeholder="Clinic/Hospital name, locality, city, state…" required></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="ft-contact">Contact Number <span class="required">*</span></label>
+          <input type="tel" id="ft-contact" class="form-control" placeholder="10-digit mobile" pattern="[0-9]{10}" maxlength="10" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="ft-email">Email <span class="required">*</span></label>
+          <input type="email" id="ft-email" class="form-control" placeholder="doctor@example.com" required />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="ft-id-type">Official Government ID Proof <span class="required">*</span></label>
+          <select id="ft-id-type" class="form-control" required>
+            <option value="">Select ID proof type</option>
+            <option value="Aadhaar Card">Aadhaar Card</option>
+            <option value="Passport">Passport</option>
+            <option value="Driving Licence">Driving Licence</option>
+            <option value="Voter ID">Voter ID</option>
+            <option value="PAN Card">PAN Card</option>
+            <option value="Medical Council ID">Medical Council ID</option>
+            <option value="Other Government ID">Other Government ID</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="ft-id-file">Upload Photo of ID <span class="required">*</span></label>
+          <input type="file" id="ft-id-file" class="form-control" accept="image/jpeg,image/png,image/webp" required />
+          <span class="form-hint">JPG, PNG or WEBP image</span>
+        </div>
+      </div>
+
+      <!-- ID photo preview -->
+      <div id="ft-id-preview" style="display:none; margin-bottom:var(--space-md);">
+        <div class="form-label">ID Photo Preview</div>
+        <img id="ft-id-preview-img" alt="ID preview" style="display:block; max-width:100%; max-height:180px; border:1px solid var(--border); border-radius:8px; margin-top:6px; object-fit:contain;" />
+      </div>
+
+      <!-- Languages spoken (each in own language) -->
+      <div class="form-group">
+        <label class="form-label">Languages Spoken</label>
+        <div class="language-grid" id="lang-grid">
+          <!-- Built by JS -->
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-bottom:var(--space-md);">
+        <span class="alert-icon">ℹ️</span>
+        <div>Your details will be verified against official government records. This option disappears after verification.</div>
+      </div>
+
+      <div id="ft-error" class="alert alert-danger hidden">
+        <span class="alert-icon">❌</span><span id="ft-error-msg"></span>
+      </div>
+
+      <div class="flex gap-sm" style="flex-wrap:wrap;">
+        <button type="submit" id="ft-submit-btn" class="btn btn-primary">✅ Verify &amp; Open Portal</button>
+        <a href="/index.html" class="btn btn-secondary">← Dashboard</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="/index.html" class="navbar-brand"><div class="logo-icon">🏥</div>Sahaay Clinic</a>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu" onclick="toggleMobileNav()">☰</button>
+  <ul class="navbar-nav" id="navbar-nav">
+    <li><a href="/index.html">Dashboard</a></li>
+    <li><a href="/intake.html">New Patient</a></li>
+    <li><a href="/firstaid.html">First Aid</a></li>
+    <li><a href="/doctor.html" class="active">Doctor Portal</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <span class="lang-selector-mount"></span>
+    <span id="network-status" class="status-indicator status-online"><span class="status-dot"></span> Online</span>
+    <a href="/profile.html" class="profile-btn" title="My Profile"><span class="profile-avatar">👤</span></a>
+    <a href="/index.html" class="btn btn-secondary btn-sm">← Back</a>
+  </div>
+</nav>
+
+<div class="page-container">
+
+  <div class="page-header">
+    <h1 class="page-title">👨‍⚕️ Doctor Verification &amp; Teleconsult Portal</h1>
+    <p class="page-subtitle">Review AI-drafted assessments, verify them, and conduct remote teleconsultations.</p>
+  </div>
+
+  <!-- Current doctor info bar -->
+  <div id="doctor-info-bar" style="margin-bottom:var(--space-lg); padding:12px var(--space-md); background:var(--green-bg); border:1px solid var(--green-border); border-radius:8px; display:none; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+    <div>
+      <span style="font-weight:600; color:#56d364;" id="di-name">Dr. —</span>
+      <span class="text-muted" style="font-size:0.85rem;" id="di-desig"> — </span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <span class="badge badge-verified">✅ Verified</span>
+      <button onclick="clearDoctorAndShowForm()" class="btn btn-secondary btn-sm">Change Doctor</button>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="grid-3" style="margin-bottom:var(--space-lg);">
+    <div class="stat-card amber">
+      <div class="stat-value" id="stat-pending">—</div>
+      <div class="stat-label">Awaiting Review</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-value" id="stat-verified">—</div>
+      <div class="stat-label">Verified Today</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-value" id="stat-critical">—</div>
+      <div class="stat-label">Critical / Urgent</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div id="doctor-tabs-wrapper">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'tab-pending')">📋 Awaiting Review</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-verify')">✅ Verify a Case</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-teleconsult')">📹 Teleconsult</button>
+    </div>
+
+    <!-- ────────────────────────
+         TAB 1: PENDING CASES
+    ──────────────────────── -->
+    <div id="tab-pending" class="tab-panel active">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📋 Cases Awaiting Doctor Review</span>
+          <button onclick="loadPendingCases()" class="btn btn-secondary btn-sm">↻ Refresh</button>
+        </div>
+        <div class="card-body">
+          <div id="pending-loading" class="text-center text-muted" style="padding:32px;">Loading cases…</div>
+          <div id="pending-offline" class="alert alert-info hidden">
+            <span class="alert-icon">📴</span>
+            <div><strong>Offline.</strong> Showing locally cached cases only.</div>
+          </div>
+          <div id="pending-table-wrapper" class="hidden">
+            <div class="table-scroll-wrapper">
+              <table class="queue-table">
+                <thead>
+                  <tr><th>Patient</th><th>AI Condition</th><th>Urgency</th><th>Status</th><th>Submitted</th><th>Action</th></tr>
+                </thead>
+                <tbody id="pending-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="pending-empty" class="text-center text-muted hidden" style="padding:40px;">
+            <div style="font-size:2.5rem; margin-bottom:12px;">✅</div>
+            <strong>All caught up!</strong><br><small>No pending cases awaiting review.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────
+         TAB 2: VERIFY A CASE
+    ──────────────────────── -->
+    <div id="tab-verify" class="tab-panel">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">✅ Review &amp; Verify AI Assessment</span>
+          <span id="verify-status-badge" class="badge badge-ai-draft">⚠️ AI Draft (Unverified)</span>
+        </div>
+        <div class="card-body">
+
+          <div id="verify-no-case" class="text-center text-muted" style="padding:40px;">
+            <div style="font-size:2rem; margin-bottom:12px;">👆</div>
+            Select a case from <strong>"Awaiting Review"</strong> and click <strong>"Review"</strong>.
+          </div>
+
+          <div id="verify-case-form" class="hidden">
+
+            <!-- Patient Summary -->
+            <div class="card" style="margin-bottom:var(--space-lg); background:var(--bg-elevated);">
+              <div class="card-header" style="border-bottom-color:var(--border-muted);">
+                <span class="card-title">👤 Patient Summary</span>
+                <span id="case-patient-id" style="font-family:var(--font-mono); font-size:0.82rem; color:var(--text-muted);"></span>
+              </div>
+              <div class="form-row" style="margin-top:0;">
+                <div><div class="form-label">Name</div><div id="case-name" style="font-weight:600;"></div></div>
+                <div><div class="form-label">Age / Gender</div><div id="case-age-gender"></div></div>
+                <div><div class="form-label">Chief Complaint</div><div id="case-complaint" style="color:var(--text-secondary);"></div></div>
+              </div>
+            </div>
+
+            <!-- Vitals -->
+            <h4 style="margin-bottom:var(--space-md); color:var(--text-muted);">Recorded Vitals</h4>
+            <div id="case-vitals-grid" class="vitals-grid" style="margin-bottom:var(--space-lg);"></div>
+
+            <!-- AI Draft -->
+            <h4 style="margin-bottom:var(--space-md);">AI Draft Assessment <span class="badge badge-ai-draft" style="margin-left:8px;">⚠️ Unverified</span></h4>
+            <div class="card" style="margin-bottom:var(--space-lg); background:var(--amber-bg); border-color:var(--amber-border);">
+              <div class="form-row">
+                <div><div class="form-label" style="color:var(--text-muted);">AI Likely Condition</div><div id="ai-condition" style="font-weight:600; font-size:1rem;"></div></div>
+                <div><div class="form-label" style="color:var(--text-muted);">AI Urgency</div><div id="ai-urgency" style="font-weight:600;"></div></div>
+                <div><div class="form-label" style="color:var(--text-muted);">AI Confidence</div><div id="ai-confidence"></div></div>
+              </div>
+              <div style="margin-top:var(--space-md);">
+                <div class="form-label" style="color:var(--text-muted);">AI Recommendations</div>
+                <ul id="ai-recommendations" style="margin-top:8px; padding-left:20px; font-size:0.88rem; color:var(--text-secondary); line-height:1.9;"></ul>
+              </div>
+              <div style="margin-top:var(--space-md);">
+                <div class="form-label" style="color:var(--text-muted);">AI Reasoning</div>
+                <p id="ai-reasoning" style="font-size:0.85rem; color:var(--text-muted); line-height:1.7;"></p>
+              </div>
+            </div>
+
+            <!-- Doctor Review Form -->
+            <h4 style="margin-bottom:var(--space-md);">Doctor's Review <span class="badge badge-info" style="margin-left:8px;">Your Input Required</span></h4>
+
+            <form id="verify-form" novalidate>
+              <input type="hidden" id="verify-case-id" value="" />
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="doctor-decision">Decision <span class="required">*</span></label>
+                  <select id="doctor-decision" class="form-control" required>
+                    <option value="">Select a decision</option>
+                    <option value="approve">✅ Approve AI Assessment as-is</option>
+                    <option value="modify">✏️ Approve with Modifications</option>
+                    <option value="reject">❌ Reject — Different Diagnosis</option>
+                    <option value="refer">🏥 Refer to Higher Facility</option>
+                    <option value="teleconsult">📹 Schedule Teleconsultation</option>
+                  </select>
+                  <span class="form-error">Please select a decision.</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="doctor-diagnosis">Confirmed Diagnosis <span class="required">*</span></label>
+                  <input type="text" id="doctor-diagnosis" class="form-control" placeholder="Your confirmed diagnosis" required />
+                  <span class="form-error">Please enter your diagnosis.</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="doctor-treatment">Treatment Plan / Instructions</label>
+                <textarea id="doctor-treatment" class="form-control" rows="3" placeholder="Medications, dosage, follow-up instructions, referral details…"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="doctor-notes">Clinical Notes</label>
+                <textarea id="doctor-notes" class="form-control" rows="2" placeholder="Additional observations for the health worker…"></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="doctor-name">Doctor Name / ID <span class="required">*</span></label>
+                  <input type="text" id="doctor-name" class="form-control" placeholder="Dr. Sharma / REG-DL-12345" required />
+                  <span class="form-error">Please enter your name.</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="doctor-specialty">Specialty</label>
+                  <select id="doctor-specialty" class="form-control">
+                    <option value="General Practice">General Practice</option>
+                    <option value="Internal Medicine">Internal Medicine</option>
+                    <option value="Paediatrics">Paediatrics</option>
+                    <option value="Gynaecology">Gynaecology / Obstetrics</option>
+                    <option value="Emergency">Emergency Medicine</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-size:0.88rem;">
+                  <input type="checkbox" id="doctor-consent" style="margin-top:3px; accent-color:var(--green-light); width:16px; height:16px; flex-shrink:0;" />
+                  <span style="color:var(--text-secondary);">I confirm I have reviewed the patient information, vitals, and AI assessment above. I take clinical responsibility for this decision.</span>
+                </label>
+              </div>
+
+              <div class="flex gap-sm" style="flex-wrap:wrap;">
+                <button type="submit" id="verify-submit-btn" class="btn btn-primary">✅ Submit Verification</button>
+                <button type="button" onclick="clearVerifyForm()" class="btn btn-secondary">↺ Clear Form</button>
+              </div>
+            </form>
+
+            <!-- Success state -->
+            <div id="verify-success" class="alert alert-success hidden" style="margin-top:var(--space-lg);">
+              <span class="alert-icon">✅</span>
+              <div><strong>Case Verified Successfully</strong><br>
+              The AI draft has been upgraded to a <span class="badge badge-verified" style="display:inline-flex; vertical-align:middle;">✅ Doctor Verified</span> record. Health worker will be notified.</div>
+            </div>
+
+          </div><!-- #verify-case-form -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────
+         TAB 3: TELECONSULT
+    ──────────────────────── -->
+    <div id="tab-teleconsult" class="tab-panel">
+      <div class="grid-2">
+
+        <!-- Request session (left) -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">📹 Request Teleconsultation</span></div>
+          <div class="card-body">
+            <form id="teleconsult-form">
+              <div class="form-group">
+                <label class="form-label" for="tc-patient-id">Patient ID <span class="required">*</span></label>
+                <input type="text" id="tc-patient-id" class="form-control" placeholder="SAH-xxxxxxxxxxxxx-XXX" required />
+                <span class="form-hint">Enter the patient's QR Health ID.</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="tc-reason">Reason for Consultation</label>
+                <textarea id="tc-reason" class="form-control" placeholder="Brief description of why a teleconsult is needed…"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="tc-priority">Priority</label>
+                <select id="tc-priority" class="form-control">
+                  <option value="routine">Routine</option>
+                  <option value="urgent">Urgent (within 2 hrs)</option>
+                  <option value="emergency">Emergency (immediate)</option>
+                </select>
+              </div>
+              <button type="submit" id="tc-submit-btn" class="btn btn-primary btn-full">📤 Request Teleconsultation</button>
+            </form>
+
+            <div id="tc-result" class="hidden" style="margin-top:var(--space-lg);">
+              <div class="alert alert-success">
+                <span class="alert-icon">✅</span>
+                <div><strong>Request Submitted</strong><br><span id="tc-result-msg"></span></div>
+              </div>
+              <div id="tc-join-section" class="hidden" style="margin-top:var(--space-md);">
+                <p class="text-muted" style="font-size:0.88rem;">The doctor will join via the secure link below when available:</p>
+                <a id="tc-join-link" href="#" target="_blank" class="btn btn-primary btn-full">📹 Join Video Consultation</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: recent sessions + recent patient requests -->
+        <div>
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <div class="card-header">
+              <span class="card-title">🕐 Recent Patient Consult Requests</span>
+              <button onclick="loadRecentSessions()" class="btn btn-secondary btn-sm">↻</button>
+            </div>
+            <div class="card-body">
+              <div id="sessions-loading" class="text-muted" style="font-size:0.88rem;">Loading sessions…</div>
+              <div id="sessions-list"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span class="card-title">ℹ️ How Teleconsult Works</span></div>
+            <div class="card-body">
+              <ol class="steps-list">
+                <li>Health worker submits teleconsult request with Patient ID.</li>
+                <li>Backend (Flask) schedules a session and notifies the doctor.</li>
+                <li>Doctor joins and reviews patient records on their end.</li>
+                <li>After the call, doctor submits assessment via this portal.</li>
+                <li>Assessment is saved as <span class="badge badge-verified">✅ Doctor Verified</span>.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- #doctor-tabs-wrapper -->
+</div><!-- .page-container -->
+
+<!-- Floating offline badge -->
+<div id="offline-queue-badge" class="offline-queue-badge" onclick="syncOfflineQueue()">📤 0 records pending sync</div>
+
+<script src="/js/app.js"></script>
+<script src="/js/api.js"></script>
+
+<script>
+// ──────────────────────────────────────────────────
+// LANGUAGES (each shown in its own language)
+// ──────────────────────────────────────────────────
+const SUPPORTED_LANGUAGES = [
+  { code: 'hi',  label: 'हिंदी'       },
+  { code: 'en',  label: 'English'    },
+  { code: 'ta',  label: 'தமிழ்'      },
+  { code: 'bn',  label: 'বাংলা'      },
+  { code: 'te',  label: 'తెలుగు'     },
+  { code: 'mr',  label: 'मराठी'      },
+  { code: 'gu',  label: 'ગુજરાતી'    },
+  { code: 'kn',  label: 'ಕನ್ನಡ'      },
+  { code: 'ml',  label: 'മലയാളം'    },
+  { code: 'pa',  label: 'ਪੰਜਾਬੀ'     },
+  { code: 'ur',  label: 'اردو'       },
+  { code: 'or',  label: 'ଓଡ଼ିଆ'       },
+  { code: 'as',  label: 'অসমীয়া'    },
+];
+
+function buildLanguageGrid() {
+  const grid = document.getElementById('lang-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  SUPPORTED_LANGUAGES.forEach(lang => {
+    const chip = document.createElement('label');
+    chip.className = 'language-chip';
+    chip.innerHTML = `<input type="checkbox" value="${lang.code}" /> ${lang.label}`;
+    chip.querySelector('input').addEventListener('change', function () {
+      chip.classList.toggle('selected', this.checked);
+    });
+    grid.appendChild(chip);
+  });
+}
+
+// ──────────────────────────────────────────────────
+// MOBILE NAV
+// ──────────────────────────────────────────────────
+function toggleMobileNav() {
+  const nav = document.getElementById('navbar-nav');
+  const btn = document.getElementById('nav-hamburger');
+  if (!nav) return;
+  const open = nav.classList.toggle('open');
+  btn.textContent = open ? '✕' : '☰';
+}
+document.addEventListener('click', function (e) {
+  const nav = document.getElementById('navbar-nav');
+  const btn = document.getElementById('nav-hamburger');
+  if (!nav) return;
+  if (!nav.contains(e.target) && e.target !== btn) { nav.classList.remove('open'); if (btn) btn.textContent = '☰'; }
+});
+
+// ──────────────────────────────────────────────────
+// DOCTOR PROFILE — LOCAL STORAGE
+// ──────────────────────────────────────────────────
+const DOCTOR_KEY = 'sahaay_doctor_verified';
+const DOCTOR_DEVICE_KEY = 'sahaay_doctor_device_token';
+let currentDoctorProfile = null;
+
+function getDoctorDeviceToken() {
+  let token = localStorage.getItem(DOCTOR_DEVICE_KEY);
+  if (!token) {
+    token = (crypto.randomUUID ? crypto.randomUUID() : 'doc-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+    localStorage.setItem(DOCTOR_DEVICE_KEY, token);
+  }
+  return token;
+}
+
+async function loadStoredDoctorProfile() {
+  const local = getDoctorProfile();
+  if (local && (local.doctorUid || local.doctor_verified === true)) { local.deviceToken = local.deviceToken || getDoctorDeviceToken(); return local; }
+  try {
+    const db = await openDatabase();
+    return await new Promise(resolve => {
+      const req = db.transaction([STORE_SESSIONS], 'readonly').objectStore(STORE_SESSIONS).get('doctor');
+      req.onsuccess = () => resolve(req.result?.profile || null);
+      req.onerror = () => resolve(null);
+    });
+  } catch (e) { return local; }
+}
+
+async function persistDoctorProfile(profile) {
+  profile.deviceToken = getDoctorDeviceToken();
+  currentDoctorProfile = profile;
+  try { localStorage.setItem(DOCTOR_KEY, JSON.stringify(profile)); } catch (e) {}
+  try {
+    const db = await openDatabase();
+    await new Promise((resolve,reject)=>{
+      const tx=db.transaction([STORE_SESSIONS],'readwrite');
+      tx.objectStore(STORE_SESSIONS).put({id:'doctor', profile, savedAt:Date.now()});
+      tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
+    });
+  } catch (e) {}
+}
+
+function getDoctorProfile() {
+  try { return JSON.parse(localStorage.getItem(DOCTOR_KEY) || 'null'); }
+  catch (e) { return null; }
+}
+
+function saveDoctorProfile(profile) {
+  profile.deviceToken = getDoctorDeviceToken();
+  currentDoctorProfile = profile;
+  try { localStorage.setItem(DOCTOR_KEY, JSON.stringify(profile)); } catch (e) {}
+  // IndexedDB copy survives ordinary localStorage issues and page refreshes.
+  persistDoctorProfile(profile);
+}
+
+async function clearDoctorProfile() {
+  currentDoctorProfile = null;
+  try { localStorage.removeItem(DOCTOR_KEY); localStorage.removeItem(DOCTOR_DEVICE_KEY); } catch (e) {}
+  try { const db=await openDatabase(); const tx=db.transaction([STORE_SESSIONS],'readwrite'); tx.objectStore(STORE_SESSIONS).delete('doctor'); } catch(e) {}
+}
+
+function isDoctorVerified() {
+  return !!currentDoctorProfile && (!!currentDoctorProfile.doctorUid || currentDoctorProfile.doctor_verified === true);
+}
+
+async function clearDoctorAndShowForm() {
+  await clearDoctorProfile();
+  showFirstTimeOverlay();
+}
+
+// ──────────────────────────────────────────────────
+// FIRST-TIME OVERLAY
+// ──────────────────────────────────────────────────
+function showFirstTimeOverlay() {
+  document.getElementById('doctor-first-time-overlay').style.display = 'flex';
+  buildLanguageGrid();
+}
+
+function hideFirstTimeOverlay() {
+  document.getElementById('doctor-first-time-overlay').style.display = 'none';
+}
+
+function updateDoctorInfoBar() {
+  const bar = document.getElementById('doctor-info-bar');
+  if (!currentDoctorProfile || !isDoctorVerified()) { bar.style.display = 'none'; return; }
+  // Use flex layout to match inline style — avoid empty-string reset
+  bar.style.setProperty('display', 'flex', 'important');
+  document.getElementById('di-name').textContent  = currentDoctorProfile.doctorName || '—';
+  document.getElementById('di-desig').textContent = ' — ' + (currentDoctorProfile.designation || '');
+  // Autofill verify form
+  const nameEl = document.getElementById('doctor-name');
+  if (nameEl) nameEl.value = currentDoctorProfile.doctorName || '';
+}
+
+// ──────────────────────────────────────────────────
+// ID PROOF PREVIEW
+// ──────────────────────────────────────────────────
+document.getElementById('ft-id-file').addEventListener('change', function () {
+  const file = this.files && this.files[0];
+  const preview = document.getElementById('ft-id-preview');
+  const img = document.getElementById('ft-id-preview-img');
+  if (!file) { preview.style.display = 'none'; return; }
+  if (!['image/jpeg','image/png','image/webp'].includes(file.type)) {
+    showToast('Please upload a JPG, PNG or WEBP image.', 'error');
+    this.value = '';
+    preview.style.display = 'none';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => { img.src = e.target.result; preview.style.display = 'block'; };
+  reader.readAsDataURL(file);
+});
+
+// ──────────────────────────────────────────────────
+// FIRST-TIME FORM SUBMIT
+// ──────────────────────────────────────────────────
+document.getElementById('doctor-first-time-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const name        = document.getElementById('ft-name').value.trim();
+  const designation = document.getElementById('ft-designation').value;
+  const location    = document.getElementById('ft-location').value.trim();
+  const contact     = document.getElementById('ft-contact').value.trim();
+  const email       = document.getElementById('ft-email').value.trim();
+  const idType      = document.getElementById('ft-id-type').value;
+  const idFile      = document.getElementById('ft-id-file').files[0];
+
+  const errDiv = document.getElementById('ft-error');
+  const errMsg = document.getElementById('ft-error-msg');
+  errDiv.classList.add('hidden');
+
+  if (!name || !designation || !location || !contact || !email || !idType || !idFile) {
+    errMsg.textContent = 'Please complete all required fields including ID proof upload.';
+    errDiv.classList.remove('hidden');
+    return;
+  }
+  if (!/^[0-9]{10}$/.test(contact)) {
+    errMsg.textContent = 'Please enter a valid 10-digit contact number.';
+    errDiv.classList.remove('hidden');
+    return;
+  }
+
+  const languages = Array.from(
+    document.querySelectorAll('#lang-grid input[type=checkbox]:checked')
+  ).map(cb => cb.value);
+
+  const btn = document.getElementById('ft-submit-btn');
+  btn.disabled = true; btn.textContent = 'Verifying…';
+
+  try {
+    // Try backend registration
+    const formData = new FormData();
+    formData.append('doctor_name',     name);
+    formData.append('designation',     designation);
+    formData.append('location_address',location);
+    formData.append('contact_number',  contact);
+    formData.append('email',           email);
+    formData.append('id_proof_type',   idType);
+    formData.append('id_proof_file',   idFile);
+    formData.append('languages',       JSON.stringify(languages));
+
+    let doctorUid = 'DOC-' + Date.now().toString(36).toUpperCase();
+
+    if (navigator.onLine) {
+      try {
+        const result = await apiRegisterDoctor(formData);
+        if (result.success) doctorUid = result.doctorUid;
+      } catch (err) {
+        console.warn('Backend registration warning:', err.message);
+        // Continue with local profile even if backend fails
+      }
+    }
+
+    // Save locally
+    const previewImg = document.getElementById('ft-id-preview-img');
+    saveDoctorProfile({
+      doctorUid,
+      doctorName:    name,
+      designation,
+      location,
+      contact,
+      email,
+      idProofType:   idType,
+      idProofImage:  previewImg.src || '',
+      languages,
+      verifiedAt:    new Date().toISOString(),
+      doctor_verified: true  // flag to indicate first-time verified
+    });
+
+    hideFirstTimeOverlay();
+    updateDoctorInfoBar();
+    showToast('✅ Doctor profile verified. Portal is now active.', 'success');
+
+    await loadPendingCases();
+    await loadRecentSessions();
+
+  } catch (err) {
+    errMsg.textContent = err.message || 'Verification failed.';
+    errDiv.classList.remove('hidden');
+  } finally {
+    btn.disabled = false; btn.textContent = '✅ Verify & Open Portal';
+  }
+});
+
+// ──────────────────────────────────────────────────
+// PAGE INIT
+// ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async function () {
+  await initApp();
+
+  currentDoctorProfile = await loadStoredDoctorProfile();
+
+  if (!isDoctorVerified()) {
+    showFirstTimeOverlay();
+  } else {
+    hideFirstTimeOverlay();
+    updateDoctorInfoBar();
+    await loadPendingCases();
+    await loadRecentSessions();
+  }
+});
+
+// ──────────────────────────────────────────────────
+// LOAD PENDING CASES
+// ──────────────────────────────────────────────────
+let activeCaseId = null;
+
+async function loadPendingCases() {
+  const loadingEl = document.getElementById('pending-loading');
+  const tableEl   = document.getElementById('pending-table-wrapper');
+  const emptyEl   = document.getElementById('pending-empty');
+  const offlineEl = document.getElementById('pending-offline');
+  const tbody     = document.getElementById('pending-tbody');
+
+  loadingEl.classList.remove('hidden');
+  tableEl.classList.add('hidden');
+  emptyEl.classList.add('hidden');
+  offlineEl.classList.add('hidden');
+
+  let cases    = [];
+  let isOffline = false;
+
+  try {
+    const result = await apiGetPendingCases();
+    cases = result.cases || result.patients || [];
+  } catch (error) {
+    if (error.offline || !navigator.onLine) {
+      const local = await getAllLocalPatients();
+      cases       = local.filter(p => p.aiAssessment && p.verificationStatus !== 'verified');
+      isOffline   = true;
+    } else {
+      showToast('Failed to load cases: ' + (error.message || 'Error'), 'error');
+    }
+  }
+
+  loadingEl.classList.add('hidden');
+  if (isOffline) offlineEl.classList.remove('hidden');
+
+  const pending  = cases.filter(c => c.verificationStatus !== 'verified').length;
+  const verified = cases.filter(c => c.verificationStatus === 'verified').length;
+  const critical = cases.filter(c => {
+    const u = ((c.aiAssessment && c.aiAssessment.urgency) || c.urgency || '').toLowerCase();
+    return ['critical','high'].includes(u);
+  }).length;
+
+  document.getElementById('stat-pending').textContent  = pending;
+  document.getElementById('stat-verified').textContent = verified;
+  document.getElementById('stat-critical').textContent = critical;
+
+  if (cases.length === 0) { emptyEl.classList.remove('hidden'); return; }
+
+  tbody.innerHTML = '';
+  cases.forEach(function (c) {
+    const ai      = c.aiAssessment || {};
+    const urgency = ai.urgency || c.urgency || 'unknown';
+    const isVerified = c.verificationStatus === 'verified' || c.status === 'verified';
+
+    const urgencyBadge = ['critical','high'].includes(urgency.toLowerCase())
+      ? `<span class="badge badge-critical">🔴 ${urgency}</span>`
+      : urgency === 'moderate'
+        ? `<span class="badge badge-ai-draft">🟡 ${urgency}</span>`
+        : `<span class="badge badge-info">🔵 ${urgency}</span>`;
+
+    const statusBadge = isVerified
+      ? '<span class="badge badge-verified">✅ Verified</span>'
+      : '<span class="badge badge-ai-draft">⚠️ AI Draft</span>';
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>
+        <div class="patient-name">${escapeHtml(c.name || 'Unknown')}</div>
+        <div class="patient-meta">${escapeHtml(c.patientId || c.id || '')}</div>
+      </td>
+      <td style="font-size:0.88rem; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(ai.condition || c.condition || 'Pending AI')}</td>
+      <td>${urgencyBadge}</td>
+      <td>${statusBadge}</td>
+      <td class="text-muted" style="font-size:0.82rem;">${formatDate(c.createdAt || c.submittedAt)}</td>
+      <td>
+        ${isVerified
+          ? '<span class="text-muted" style="font-size:0.82rem;">Completed</span>'
+          : `<button onclick='openCaseForReview(${JSON.stringify(c).replace(/'/g,"\\'")})'
+               class="btn btn-primary btn-sm">Review →</button>`
+        }
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+  tableEl.classList.remove('hidden');
+}
+
+// ──────────────────────────────────────────────────
+// OPEN CASE FOR REVIEW
+// ──────────────────────────────────────────────────
+function openCaseForReview(caseData) {
+  activeCaseId = caseData.assessmentId || caseData.patientId || caseData.id;
+
+  document.getElementById('case-patient-id').textContent   = caseData.patientId || '';
+  document.getElementById('case-name').textContent         = caseData.name || '—';
+  document.getElementById('case-age-gender').textContent   = `${caseData.age || '?'} yrs / ${caseData.gender || '?'}`;
+  document.getElementById('case-complaint').textContent    = caseData.chiefComplaint || '—';
+
+  // Vitals
+  const vitals = caseData.patientVitals || caseData.vitals || {};
+  const vgrid  = document.getElementById('case-vitals-grid');
+  vgrid.innerHTML = '';
+  const vitalFields = [
+    ['temperature','🌡️ Temp','°C'], ['bpSystolic','💉 BP Sys','mmHg'],
+    ['bpDiastolic','BP Dia','mmHg'],['spo2','🫁 SpO₂','%'],
+    ['pulseRate','❤️ Pulse','bpm'], ['weight','⚖️ Weight','kg']
+  ];
+  vitalFields.forEach(([key, label, unit]) => {
+    const val = vitals[key] || '—';
+    vgrid.innerHTML += `<div class="vital-box" style="text-align:center;">
+      <div class="vital-label">${label}</div>
+      <div class="vital-value" style="font-size:1.1rem; margin-top:4px;">${val}</div>
+      <div class="vital-unit">${val !== '—' ? unit : ''}</div>
+    </div>`;
+  });
+
+  // AI assessment
+  const ai = caseData.aiAssessment || {};
+  document.getElementById('ai-condition').textContent = ai.condition || caseData.condition || '—';
+  document.getElementById('ai-urgency').textContent   = ai.urgency   || caseData.urgency   || '—';
+  document.getElementById('ai-confidence').textContent= ai.confidence|| caseData.confidence|| '—';
+  document.getElementById('ai-reasoning').textContent = ai.reasoning  || caseData.reasoning || '—';
+
+  const recList = document.getElementById('ai-recommendations');
+  recList.innerHTML = '';
+  const recs = ai.recommendations || caseData.recommendations || [];
+  (Array.isArray(recs) ? recs : []).forEach(r => {
+    const li = document.createElement('li'); li.textContent = r; recList.appendChild(li);
+  });
+
+  document.getElementById('verify-case-id').value = activeCaseId;
+
+  // Auto-fill doctor name
+  if (currentDoctorProfile) {
+    const dn = document.getElementById('doctor-name');
+    if (dn && !dn.value) dn.value = currentDoctorProfile.doctorName || '';
+  }
+
+  document.getElementById('verify-no-case').classList.add('hidden');
+  document.getElementById('verify-case-form').classList.remove('hidden');
+  document.getElementById('verify-success').classList.add('hidden');
+  document.getElementById('verify-status-badge').className = 'badge badge-ai-draft';
+  document.getElementById('verify-status-badge').textContent = '⚠️ AI Draft (Unverified)';
+
+  // Switch to verify tab
+  document.querySelector('.tab-btn[onclick*="tab-verify"]').click();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ──────────────────────────────────────────────────
+// VERIFY FORM SUBMIT
+// ──────────────────────────────────────────────────
+document.getElementById('verify-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const caseId   = document.getElementById('verify-case-id').value;
+  const decision = document.getElementById('doctor-decision').value;
+  const diagnosis= document.getElementById('doctor-diagnosis').value.trim();
+  const doctorName = document.getElementById('doctor-name').value.trim();
+  const consent    = document.getElementById('doctor-consent').checked;
+
+  if (!decision) { showToast('Please select a decision.', 'error'); return; }
+  if (!diagnosis) { document.getElementById('doctor-diagnosis').classList.add('is-invalid'); return; }
+  if (!doctorName) { document.getElementById('doctor-name').classList.add('is-invalid'); return; }
+  if (!consent) { showToast('Please check the consent checkbox to proceed.', 'warning'); return; }
+
+  const btn = document.getElementById('verify-submit-btn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+
+  try {
+    const result = await apiDoctorVerify(caseId, {
+      decision,
+      diagnosis,
+      treatmentPlan: document.getElementById('doctor-treatment').value.trim(),
+      clinicalNotes: document.getElementById('doctor-notes').value.trim(),
+      doctorName,
+      specialty: document.getElementById('doctor-specialty').value
+    });
+
+    if (result.success || result.verificationStatus === 'verified') {
+      document.getElementById('verify-success').classList.remove('hidden');
+      document.getElementById('verify-status-badge').className = 'badge badge-verified';
+      document.getElementById('verify-status-badge').textContent = '✅ Doctor Verified';
+      showToast('✅ Case verified successfully!', 'success');
+      // Refresh pending list
+      await loadPendingCases();
+    } else {
+      throw new Error(result.message || 'Verification failed.');
+    }
+  } catch (err) {
+    showToast('Error: ' + (err.message || 'Failed to submit verification.'), 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = '✅ Submit Verification';
+  }
+});
+
+function clearVerifyForm() {
+  document.getElementById('verify-form').reset();
+  document.getElementById('verify-success').classList.add('hidden');
+}
+
+// ──────────────────────────────────────────────────
+// TELECONSULT FORM
+// ──────────────────────────────────────────────────
+document.getElementById('teleconsult-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const patientId = document.getElementById('tc-patient-id').value.trim();
+  const reason    = document.getElementById('tc-reason').value.trim();
+  const priority  = document.getElementById('tc-priority').value;
+
+  if (!patientId) { showToast('Patient ID is required.', 'error'); return; }
+
+  const btn = document.getElementById('tc-submit-btn');
+  btn.disabled = true; btn.textContent = 'Requesting…';
+
+  try {
+    const result = await apiRequestTeleconsult(patientId, reason, priority);
+    const resultDiv = document.getElementById('tc-result');
+    document.getElementById('tc-result-msg').textContent = result.message || 'Teleconsultation request submitted.';
+    resultDiv.classList.remove('hidden');
+
+    if (result.joinUrl) {
+      document.getElementById('tc-join-link').href = result.joinUrl;
+      document.getElementById('tc-join-section').classList.remove('hidden');
+    }
+    showToast('📹 Teleconsult request submitted.', 'success');
+    await loadRecentSessions();
+  } catch (err) {
+    showToast('Failed: ' + (err.message || 'Error.'), 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = '📤 Request Teleconsultation';
+  }
+});
+
+// ──────────────────────────────────────────────────
+// LOAD RECENT SESSIONS
+// ──────────────────────────────────────────────────
+async function loadRecentSessions() {
+  const loadingEl = document.getElementById('sessions-loading');
+  const listEl    = document.getElementById('sessions-list');
+  loadingEl.style.display = '';
+  listEl.innerHTML = '';
+
+  try {
+    const result = await apiGetRecentSessions();
+    const sessions = result.sessions || [];
+    loadingEl.style.display = 'none';
+
+    if (!sessions.length) {
+      listEl.innerHTML = '<p class="text-muted" style="font-size:0.85rem;">No recent sessions.</p>';
+      return;
+    }
+
+    sessions.slice(0, 8).forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'teleconsult-request-item';
+      item.innerHTML = `
+        <div class="tc-patient-name">${escapeHtml(s.patientName || s.patient_id || 'Unknown Patient')}</div>
+        <div class="tc-meta">${formatDate(s.created_at || s.createdAt)} · ${escapeHtml(s.priority || 'routine')}</div>
+        <div class="tc-meta" style="margin-top:4px;">${escapeHtml(s.reason || '—')}</div>
+        ${s.session_url ? `<a href="${escapeHtml(s.session_url)}" target="_blank" class="btn btn-primary btn-sm" style="margin-top:6px;">📹 Join</a>` : ''}
+      `;
+      listEl.appendChild(item);
+    });
+  } catch (err) {
+    loadingEl.style.display = 'none';
+    listEl.innerHTML = '<p class="text-muted" style="font-size:0.85rem;">Unable to load sessions.</p>';
+  }
+}
+
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.appendChild(document.createTextNode(String(str)));
+  return d.innerHTML;
+}
+</script>
+</body>
+</html>
