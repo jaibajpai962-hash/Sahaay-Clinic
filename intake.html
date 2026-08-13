@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sahaay Clinic — Patient Intake</title>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#238636" />
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        { pageLanguage: 'en', includedLanguages: 'hi,ta,bn,te,mr,gu,kn,ml,pa,ur,or,as,en',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false },
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/index.html" class="navbar-brand"><div class="logo-icon">🏥</div>Sahaay Clinic</a>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu" onclick="toggleMobileNav()">☰</button>
+    <ul class="navbar-nav" id="navbar-nav">
+      <li><a href="/index.html">Dashboard</a></li>
+      <li><a href="/intake.html" class="active">New Patient</a></li>
+      <li><a href="/firstaid.html">First Aid</a></li>
+      <li><a href="/doctor.html">Doctor Portal</a></li>
+    </ul>
+    <div class="navbar-actions">
+      <span class="lang-selector-mount"></span>
+      <span id="network-status" class="status-indicator status-online"><span class="status-dot"></span> Online</span>
+      <a href="/profile.html" class="profile-btn" title="My Profile"><span class="profile-avatar">👤</span></a>
+      <a href="/index.html" class="btn btn-secondary btn-sm">← Back</a>
+    </div>
+  </nav>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h1 class="page-title">Patient Intake</h1>
+      <p class="page-subtitle">Register patient, record vitals, generate QR Health ID, and run AI triage.</p>
+    </div>
+
+    <!-- TABS -->
+    <div id="intake-tabs-wrapper">
+      <div class="tabs">
+        <button class="tab-btn active"  onclick="switchTab(this,'tab-register')">① Register</button>
+        <button class="tab-btn"         onclick="switchTab(this,'tab-vitals')">② Vitals</button>
+        <button class="tab-btn"         onclick="switchTab(this,'tab-qr')">③ QR Health ID</button>
+        <button class="tab-btn"         onclick="switchTab(this,'tab-triage')">④ AI Triage</button>
+      </div>
+
+      <!-- ────────────────────────────
+           TAB 1: PATIENT REGISTRATION
+      ──────────────────────────── -->
+      <div id="tab-register" class="tab-panel active">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">👤 New Patient Registration</span>
+            <button onclick="openModal('scan-modal')" class="btn btn-secondary btn-sm">📷 Scan Existing QR</button>
+          </div>
+          <div class="card-body">
+            <form id="register-form" novalidate>
+
+              <div id="loaded-patient-banner" class="alert alert-success hidden">
+                <span class="alert-icon">✅</span>
+                <div><strong>Patient Loaded from QR</strong><br><small id="loaded-patient-info"></small></div>
+              </div>
+
+              <input type="hidden" id="patient-id-field" value="" />
+
+              <h3 style="margin-bottom:var(--space-md); font-size:0.9rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Personal Information</h3>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="patient-name">Full Name <span class="required">*</span></label>
+                  <input type="text" id="patient-name" class="form-control" placeholder="Patient's full name" required />
+                  <span class="form-error">Name is required.</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="patient-age">Age (years) <span class="required">*</span></label>
+                  <input type="number" id="patient-age" class="form-control" placeholder="e.g., 35" min="0" max="120" required />
+                  <span class="form-error">Valid age is required.</span>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="patient-gender">Gender <span class="required">*</span></label>
+                  <select id="patient-gender" class="form-control" required>
+                    <option value="">Select gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <span class="form-error">Please select a gender.</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="patient-phone">Phone Number</label>
+                  <input type="tel" id="patient-phone" class="form-control" placeholder="e.g., 9876543210" maxlength="10" />
+                  <span class="form-hint">Optional — for follow-up SMS.</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="patient-village">Village / Address</label>
+                <input type="text" id="patient-village" class="form-control" placeholder="Village name or address" />
+              </div>
+
+              <hr class="divider" />
+              <h3 style="margin-bottom:var(--space-md); font-size:0.9rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Medical History</h3>
+
+              <div class="form-group">
+                <label class="form-label" for="chief-complaint">Chief Complaint <span class="required">*</span></label>
+
+                <!-- Text area -->
+                <textarea id="chief-complaint" class="form-control" rows="3"
+                  placeholder="Main reason for visit (e.g., 'Fever for 3 days'). Or record / upload media below…"></textarea>
+                <span class="form-error">Please describe the complaint or attach media.</span>
+
+                <!-- Multi-modal input controls -->
+                <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+                  <!-- Audio recorder -->
+                  <button type="button" id="record-audio-btn" class="btn btn-secondary btn-sm" onclick="toggleAudioRecording()">🎤 Record Audio</button>
+                  <span id="recording-status" style="font-size:0.83rem; color:var(--red-light); display:none;">🔴 Recording… <span id="record-timer">00:00</span></span>
+
+                  <!-- Video capture -->
+                  <button type="button" id="record-video-btn" class="btn btn-secondary btn-sm" onclick="openVideoCapture()">🎬 Record Video</button>
+
+                  <!-- File upload -->
+                  <label for="media-file-input" class="btn btn-secondary btn-sm" style="margin:0; cursor:pointer;">📁 Upload Photo/Video/Audio</label>
+                  <input type="file" id="media-file-input" accept="image/*,video/*,audio/*" multiple style="display:none;" onchange="handleFileSelect(event)" />
+                </div>
+
+                <!-- Media preview strip -->
+                <div id="media-preview-list" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;"></div>
+              </div>
+
+              <!-- Video capture modal (inline) -->
+              <div id="video-capture-box" style="display:none; margin-top:10px; padding:12px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <strong style="font-size:0.9rem;">📹 Camera Preview</strong>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="closeVideoCapture()">✕ Close</button>
+                </div>
+                <video id="cam-video" autoplay playsinline muted style="width:100%; max-width:340px; border-radius:6px; background:#000; display:block; margin:0 auto 8px;"></video>
+                <div style="display:flex; gap:8px; justify-content:center;">
+                  <button type="button" id="snap-photo-btn" class="btn btn-primary btn-sm" onclick="snapPhoto()">📸 Take Photo</button>
+                  <button type="button" id="start-vid-btn"  class="btn btn-secondary btn-sm" onclick="startVideoRecord()">⏺ Start Video</button>
+                  <button type="button" id="stop-vid-btn"   class="btn btn-secondary btn-sm hidden" onclick="stopVideoRecord()">⏹ Stop</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="symptom-duration">Symptom Duration</label>
+                  <select id="symptom-duration" class="form-control">
+                    <option value="">Select duration</option>
+                    <option value="<1 day">Less than 1 day</option>
+                    <option value="1-3 days">1–3 days</option>
+                    <option value="4-7 days">4–7 days</option>
+                    <option value="1-2 weeks">1–2 weeks</option>
+                    <option value=">2 weeks">More than 2 weeks</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="known-conditions">Known Medical Conditions</label>
+                  <input type="text" id="known-conditions" class="form-control" placeholder="e.g., Diabetes, Hypertension (or 'None')" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="current-medications">Current Medications</label>
+                  <input type="text" id="current-medications" class="form-control" placeholder="List medications or 'None'" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="allergies">Known Allergies</label>
+                  <input type="text" id="allergies" class="form-control" placeholder="Drug/food allergies or 'NKDA'" />
+                </div>
+              </div>
+
+              <div id="pregnancy-field" class="form-group hidden">
+                <label class="form-label" for="pregnancy-status">Pregnancy Status</label>
+                <select id="pregnancy-status" class="form-control">
+                  <option value="not_pregnant">Not pregnant</option>
+                  <option value="pregnant">Pregnant</option>
+                  <option value="postpartum">Post-partum (&lt; 6 weeks)</option>
+                  <option value="unknown">Unknown</option>
+                </select>
+              </div>
+
+              <div class="card-footer">
+                <button type="submit" id="register-btn" class="btn btn-primary">Save &amp; Continue to Vitals →</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div><!-- TAB 1 -->
+
+      <!-- ────────────────────────────
+           TAB 2: VITALS
+      ──────────────────────────── -->
+      <div id="tab-vitals" class="tab-panel">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🩺 Record Vitals</span>
+            <span id="vitals-patient-name" class="text-muted" style="font-size:0.85rem;"></span>
+          </div>
+          <div class="card-body">
+
+            <div class="alert alert-info" style="margin-bottom:var(--space-lg);">
+              <span class="alert-icon">ℹ️</span>
+              <div><strong>Normal Ranges (Adults):</strong> Temp: 36.1–37.2°C | BP: 90–120/60–80 mmHg | SpO₂: ≥95% | Pulse: 60–100 bpm</div>
+            </div>
+
+            <form id="vitals-form">
+              <input type="hidden" id="vitals-patient-id" value="" />
+
+              <div class="vitals-grid">
+
+                <div class="vital-box" id="vbox-temp">
+                  <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" for="v-temp">🌡️ Temperature</label>
+                    <input type="number" id="v-temp" class="form-control" placeholder="36.5" step="0.1" min="30" max="45" oninput="checkVitalRange()" />
+                    <span class="vital-unit">°C</span>
+                  </div>
+                </div>
+
+                <!-- BP BOX — larger, two inputs with separator -->
+                <div class="vital-box" id="vbox-bp">
+                  <label class="form-label">💉 Blood Pressure <span class="vital-unit">mmHg (sys / dia)</span></label>
+                  <div class="flex" style="gap:10px; align-items:center; justify-content:center; margin-top:8px;">
+                    <input type="number" id="v-bp-sys" class="form-control"
+                      placeholder="SYS" min="60" max="250"
+                      style="text-align:center;"
+                      oninput="checkVitalRange()" />
+                    <span class="bp-separator">/</span>
+                    <input type="number" id="v-bp-dia" class="form-control"
+                      placeholder="DIA" min="40" max="150"
+                      style="text-align:center;"
+                      oninput="checkVitalRange()" />
+                  </div>
+                  <div id="bp-live-display" style="text-align:center; font-size:1.1rem; font-weight:700; margin-top:8px; color:var(--text-primary); font-family:var(--font-mono);">—/—</div>
+                </div>
+
+                <div class="vital-box" id="vbox-spo2">
+                  <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" for="v-spo2">🫁 SpO₂</label>
+                    <input type="number" id="v-spo2" class="form-control" placeholder="98" min="60" max="100" oninput="checkVitalRange()" />
+                    <span class="vital-unit">%</span>
+                  </div>
+                </div>
+
+                <div class="vital-box" id="vbox-pulse">
+                  <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" for="v-pulse">❤️ Pulse Rate</label>
+                    <input type="number" id="v-pulse" class="form-control" placeholder="72" min="20" max="250" oninput="checkVitalRange()" />
+                    <span class="vital-unit">bpm</span>
+                  </div>
+                </div>
+
+                <div class="vital-box">
+                  <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" for="v-weight">⚖️ Weight</label>
+                    <input type="number" id="v-weight" class="form-control" placeholder="60" step="0.1" min="1" max="300" />
+                    <span class="vital-unit">kg</span>
+                  </div>
+                </div>
+
+                <div class="vital-box">
+                  <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" for="v-rr">🌬️ Resp. Rate</label>
+                    <input type="number" id="v-rr" class="form-control" placeholder="16" min="5" max="60" oninput="checkVitalRange()" />
+                    <span class="vital-unit">breaths/min</span>
+                  </div>
+                </div>
+
+              </div><!-- .vitals-grid -->
+
+              <div id="vitals-alert" class="alert alert-danger hidden">
+                <span class="alert-icon">🚨</span>
+                <div><strong>Critical Vital(s) Detected</strong><br><span id="vitals-alert-msg"></span></div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="v-notes">Clinical Observation Notes</label>
+                <textarea id="v-notes" class="form-control" placeholder="Additional observations (e.g., 'Patient appears lethargic, mild pallor noted')"></textarea>
+              </div>
+
+              <div class="card-footer">
+                <button type="submit" id="vitals-btn" class="btn btn-primary">Save Vitals &amp; Continue →</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div><!-- TAB 2 -->
+
+      <!-- ────────────────────────────
+           TAB 3: QR HEALTH ID
+      ──────────────────────────── -->
+      <div id="tab-qr" class="tab-panel">
+        <div class="grid-2">
+
+          <!-- Generate QR -->
+          <div class="card">
+            <div class="card-header"><span class="card-title">📲 Generate QR Health ID</span></div>
+            <div class="card-body">
+              <p class="text-muted" style="font-size:0.88rem;">Each patient gets a unique QR code. Print or show on screen — any clinic device can scan it offline.</p>
+              <div id="qr-placeholder" class="text-center text-muted" style="padding:32px;">← Register a patient first to generate their QR Health ID.</div>
+              <div id="qr-section" class="qr-container hidden">
+                <canvas id="qr-canvas"></canvas>
+                <div class="text-center">
+                  <div id="qr-patient-name" style="font-weight:600; margin-bottom:4px;"></div>
+                  <div id="qr-patient-id" style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted);"></div>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+                  <button onclick="downloadQR()" class="btn btn-secondary btn-sm">⬇ Download QR</button>
+                  <button onclick="window.print()" class="btn btn-secondary btn-sm">🖨 Print</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scan QR -->
+          <div class="card">
+            <div class="card-header"><span class="card-title">📷 Scan Existing QR</span></div>
+            <div class="card-body">
+              <p class="text-muted" style="font-size:0.88rem;">Point the camera at a patient's QR Health ID card to instantly load their record. Works offline.</p>
+              <div class="qr-container">
+                <div class="qr-scan-wrapper" id="scanner-wrapper">
+                  <video id="qr-scanner-video" autoplay playsinline style="display:none;"></video>
+                  <div class="qr-scan-frame" id="scan-frame" style="display:none;"></div>
+                </div>
+                <div id="scan-status" class="text-muted" style="font-size:0.85rem;">Camera is off</div>
+                <div class="flex gap-sm">
+                  <button id="start-scan-btn" onclick="handleStartScan()" class="btn btn-primary btn-sm">▶ Start Scanner</button>
+                  <button id="stop-scan-btn" onclick="handleStopScan()" class="btn btn-secondary btn-sm hidden">■ Stop Scanner</button>
+                </div>
+                <div id="scan-result" class="alert alert-success hidden" style="width:100%; text-align:left;">
+                  <span class="alert-icon">✅</span>
+                  <div><strong>Patient Found!</strong><br><span id="scan-result-text"></span><br>
+                  <a id="scan-result-link" href="#" class="btn btn-primary btn-sm mt-sm">Open Patient Record →</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- TAB 3 -->
+
+      <!-- ────────────────────────────
+           TAB 4: AI TRIAGE
+      ──────────────────────────── -->
+      <div id="tab-triage" class="tab-panel">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🤖 AI Triage Assessment</span>
+            <span class="badge badge-ai-draft">⚠️ AI Draft (Unverified)</span>
+          </div>
+          <div class="card-body">
+
+            <div class="alert alert-warning">
+              <span class="alert-icon">⚠️</span>
+              <div>
+                <strong>AI Draft — Not a Medical Diagnosis</strong><br>
+                AI assessment is a <em>clinical decision support tool only</em>.
+                <strong>A qualified doctor must review and approve all AI suggestions before any treatment is given.</strong>
+              </div>
+            </div>
+
+            <form id="triage-form">
+              <input type="hidden" id="triage-patient-id" value="" />
+
+              <div class="form-group">
+                <label class="form-label">Presenting Symptoms (check all that apply)</label>
+                <div id="symptom-checklist" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:8px; margin-top:8px;"></div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="triage-notes">Additional Clinical Notes</label>
+                <textarea id="triage-notes" class="form-control" rows="3"
+                  placeholder="Any additional observations for the AI to consider (e.g., travel history, duration, associated symptoms)…"></textarea>
+              </div>
+
+              <button type="submit" id="triage-btn" class="btn btn-primary">🤖 Submit for AI Assessment</button>
+            </form>
+
+            <hr class="divider" />
+
+            <!-- AI RESULT — hidden until returned -->
+            <div id="triage-result" class="hidden">
+              <div class="flex justify-between items-center mb-md">
+                <h3>⚠️ AI Assessment Result</h3>
+                <span id="result-status-badge" class="badge badge-ai-draft">⚠️ AI Draft (Unverified)</span>
+              </div>
+
+              <!-- Key summary boxes -->
+              <div class="vitals-grid" style="grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); margin-bottom:var(--space-md);">
+                <div class="vital-box">
+                  <div class="vital-label">Likely Condition</div>
+                  <div id="result-condition" class="vital-value" style="font-size:0.95rem; margin-top:4px; word-break:break-word;">—</div>
+                </div>
+                <div class="vital-box">
+                  <div class="vital-label">Urgency Level</div>
+                  <div id="result-urgency" class="vital-value" style="font-size:0.95rem; margin-top:4px;">—</div>
+                </div>
+                <div class="vital-box">
+                  <div class="vital-label">Confidence</div>
+                  <div id="result-confidence" class="vital-value" style="font-size:0.95rem; margin-top:4px;">—</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Recommended Actions</label>
+                <ul id="result-recommendations" style="padding-left:20px; color:var(--text-secondary); font-size:0.9rem; line-height:2;"></ul>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">AI Reasoning <span class="badge badge-ai-draft" style="margin-left:6px;">⚠️ Unverified Draft</span></label>
+                <div id="result-reasoning" class="ai-reasoning-box"></div>
+              </div>
+
+              <div id="red-flags-box" class="hidden">
+                <label class="form-label" style="color:var(--red-light);">🚨 Red Flags Detected</label>
+                <ul id="result-red-flags" style="padding-left:20px; color:var(--red-light); font-size:0.9rem; line-height:2;"></ul>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="flex gap-sm" style="flex-wrap:wrap; margin-top:var(--space-md);">
+                <button onclick="sendToDoctor()" class="btn btn-primary">📤 Send to Doctor for Review</button>
+                <a href="/firstaid.html" class="btn btn-secondary">📋 View First Aid Guide</a>
+                <button onclick="window.print()" class="btn btn-secondary">🖨 Print Summary</button>
+              </div>
+
+              <div id="sent-to-doctor-banner" class="alert alert-success hidden" style="margin-top:var(--space-md);">
+                <span class="alert-icon">✅</span>
+                <div><strong>Sent to Doctor Portal</strong><br>
+                The AI assessment key points have been forwarded for doctor review. A qualified doctor will verify this shortly.</div>
+              </div>
+            </div>
+
+            <!-- Loading spinner -->
+            <div id="triage-loading" class="text-center text-muted hidden" style="padding:32px;">
+              <div style="font-size:2rem; margin-bottom:12px;">🤖</div>
+              Submitting to Gemini AI assessment engine…<br>
+              <small>This may take 5–15 seconds.</small>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- TAB 4 -->
+
+    </div><!-- tabs-wrapper -->
+  </div><!-- page-container -->
+
+  <!-- Floating offline badge -->
+  <div id="offline-queue-badge" class="offline-queue-badge" onclick="syncOfflineQueue()">📤 0 records pending sync</div>
+
+  <!-- SCAN MODAL -->
+  <div id="scan-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>📷 Scan Patient QR Code</h3>
+        <button class="modal-close" onclick="closeModal('scan-modal'); handleStopScan();">✕</button>
+      </div>
+      <p class="text-muted" style="font-size:0.88rem; margin-bottom:var(--space-md);">Point the camera at the patient's printed QR Health ID card.</p>
+      <div class="qr-container">
+        <div class="qr-scan-wrapper">
+          <video id="modal-qr-video" autoplay playsinline style="width:100%; display:none;"></video>
+          <div class="qr-scan-frame" id="modal-scan-frame" style="display:none;"></div>
+        </div>
+        <div id="modal-scan-status" class="text-muted" style="font-size:0.85rem;">Camera off</div>
+        <div class="flex gap-sm">
+          <button onclick="handleModalStartScan()" class="btn btn-primary btn-sm">▶ Start</button>
+          <button onclick="handleStopScan(); closeModal('scan-modal');" class="btn btn-secondary btn-sm">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/api.js"></script>
+
+  <script>
+  // ──────────────────────────────────────────────
+  // MOBILE NAV
+  // ──────────────────────────────────────────────
+  function toggleMobileNav() {
+    const nav = document.getElementById('navbar-nav');
+    const btn = document.getElementById('nav-hamburger');
+    if (!nav) return;
+    const open = nav.classList.toggle('open');
+    btn.textContent = open ? '✕' : '☰';
+  }
+  document.addEventListener('click', function (e) {
+    const nav = document.getElementById('navbar-nav');
+    const btn = document.getElementById('nav-hamburger');
+    if (!nav) return;
+    if (!nav.contains(e.target) && e.target !== btn) {
+      nav.classList.remove('open');
+      if (btn) btn.textContent = '☰';
+    }
+  });
+
+  // ──────────────────────────────────────────────
+  // STATE
+  // ──────────────────────────────────────────────
+  let currentPatientId   = null;
+  let currentPatientName = null;
+  let attachedMedia      = []; // [{name, type, base64}]
+  let mediaRecorder      = null;
+  let audioChunks        = [];
+  let recordingInterval  = null;
+
+  // Camera stream for video capture
+  let camStream       = null;
+  let vidRecorder     = null;
+  let vidChunks       = [];
+
+  const SYMPTOM_OPTIONS = [
+    'Fever', 'Cough', 'Headache', 'Body ache', 'Fatigue',
+    'Diarrhoea', 'Vomiting', 'Nausea', 'Chest pain',
+    'Difficulty breathing', 'Abdominal pain', 'Rash / skin changes',
+    'Dizziness', 'Swelling', 'Loss of appetite', 'Sore throat',
+    'Runny nose', 'Ear pain', 'Eye discharge / redness', 'Bleeding',
+    'Jaundice', 'Seizures', 'High blood pressure', 'Diabetes symptom',
+    'Urinary complaint', 'Back pain', 'Joint pain', 'Skin infection'
+  ];
+
+  // ──────────────────────────────────────────────
+  // PAGE INIT
+  // ──────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', async function () {
+    await initApp();
+    buildSymptomChecklist();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlPatientId = urlParams.get('id');
+    if (urlPatientId) await loadPatientFromId(urlPatientId);
+
+    document.getElementById('patient-gender').addEventListener('change', function () {
+      const pregField = document.getElementById('pregnancy-field');
+      pregField.classList.toggle('hidden', this.value !== 'Female');
+    });
+  });
+
+  // ──────────────────────────────────────────────
+  // SYMPTOM CHECKLIST
+  // ──────────────────────────────────────────────
+  function buildSymptomChecklist() {
+    const container = document.getElementById('symptom-checklist');
+    SYMPTOM_OPTIONS.forEach(function (symptom) {
+      const label = document.createElement('label');
+      label.style.cssText = 'display:flex; align-items:center; gap:8px; font-size:0.88rem; cursor:pointer; padding:6px 10px; background:var(--bg-elevated); border-radius:6px; border:1px solid var(--border); transition:border-color 0.15s;';
+      label.innerHTML = `<input type="checkbox" name="symptom" value="${symptom}" style="accent-color:var(--green-light); width:16px; height:16px;" /> ${symptom}`;
+      label.addEventListener('mouseenter', () => label.style.borderColor = 'var(--blue-light)');
+      label.addEventListener('mouseleave', () => label.style.borderColor = 'var(--border)');
+      container.appendChild(label);
+    });
+  }
+
+  // ──────────────────────────────────────────────
+  // MEDIA — FILE SELECT
+  // ──────────────────────────────────────────────
+  async function handleFileSelect(event) {
+    const files = Array.from(event.target.files);
+    for (const file of files) {
+      const base64 = await convertFileToBase64(file);
+      attachedMedia.push({ name: file.name, type: file.type, base64 });
+    }
+    renderMediaPreviews();
+    event.target.value = '';
+  }
+
+  function convertFileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload  = () => resolve(reader.result);
+      reader.onerror = (e) => reject(e);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ──────────────────────────────────────────────
+  // MEDIA — AUDIO RECORDING
+  // ──────────────────────────────────────────────
+  async function toggleAudioRecording() {
+    const recordBtn = document.getElementById('record-audio-btn');
+    const statusEl  = document.getElementById('recording-status');
+    const timerEl   = document.getElementById('record-timer');
+
+    if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks   = [];
+
+        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+        mediaRecorder.onstop = async () => {
+          const blob = new Blob(audioChunks, { type: 'audio/webm' });
+          const file = new File([blob], `audio_${Date.now()}.webm`, { type: 'audio/webm' });
+          const b64  = await convertFileToBase64(file);
+          attachedMedia.push({ name: file.name, type: file.type, base64: b64 });
+          renderMediaPreviews();
+          stream.getTracks().forEach(t => t.stop());
+        };
+
+        mediaRecorder.start();
+        recordBtn.textContent = '⏹ Stop Recording';
+        statusEl.style.display = 'inline';
+        let secs = 0;
+        recordingInterval = setInterval(() => {
+          secs++;
+          timerEl.textContent = String(Math.floor(secs / 60)).padStart(2,'0') + ':' + String(secs % 60).padStart(2,'0');
+        }, 1000);
+      } catch (err) {
+        showToast('Microphone access denied or unsupported.', 'error');
+      }
+    } else {
+      mediaRecorder.stop();
+      clearInterval(recordingInterval);
+      recordBtn.textContent = '🎤 Record Audio';
+      statusEl.style.display = 'none';
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  // MEDIA — VIDEO / PHOTO CAPTURE
+  // ──────────────────────────────────────────────
+  async function openVideoCapture() {
+    const box = document.getElementById('video-capture-box');
+    try {
+      camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: true });
+      const vid = document.getElementById('cam-video');
+      vid.srcObject = camStream;
+      box.style.display = 'block';
+    } catch (err) {
+      showToast('Camera access denied or unsupported.', 'error');
+    }
+  }
+
+  function closeVideoCapture() {
+    if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+    document.getElementById('cam-video').srcObject = null;
+    document.getElementById('video-capture-box').style.display = 'none';
+    document.getElementById('stop-vid-btn').classList.add('hidden');
+    document.getElementById('start-vid-btn').classList.remove('hidden');
+  }
+
+  function snapPhoto() {
+    const vid = document.getElementById('cam-video');
+    const canvas = document.createElement('canvas');
+    canvas.width  = vid.videoWidth  || 640;
+    canvas.height = vid.videoHeight || 480;
+    canvas.getContext('2d').drawImage(vid, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    attachedMedia.push({ name: `photo_${Date.now()}.jpg`, type: 'image/jpeg', base64: dataUrl });
+    renderMediaPreviews();
+    showToast('📸 Photo captured!', 'success');
+  }
+
+  function startVideoRecord() {
+    if (!camStream) return;
+    vidChunks = [];
+    vidRecorder = new MediaRecorder(camStream);
+    vidRecorder.ondataavailable = e => { if (e.data.size > 0) vidChunks.push(e.data); };
+    vidRecorder.onstop = async () => {
+      const blob = new Blob(vidChunks, { type: 'video/webm' });
+      const file = new File([blob], `video_${Date.now()}.webm`, { type: 'video/webm' });
+      const b64  = await convertFileToBase64(file);
+      attachedMedia.push({ name: file.name, type: file.type, base64: b64 });
+      renderMediaPreviews();
+    };
+    vidRecorder.start();
+    document.getElementById('start-vid-btn').classList.add('hidden');
+    document.getElementById('stop-vid-btn').classList.remove('hidden');
+  }
+
+  function stopVideoRecord() {
+    if (vidRecorder) vidRecorder.stop();
+    document.getElementById('stop-vid-btn').classList.add('hidden');
+    document.getElementById('start-vid-btn').classList.remove('hidden');
+    showToast('🎬 Video saved!', 'success');
+  }
+
+  // ──────────────────────────────────────────────
+  // MEDIA — RENDER PREVIEWS
+  // ──────────────────────────────────────────────
+  function renderMediaPreviews() {
+    const container = document.getElementById('media-preview-list');
+    container.innerHTML = '';
+    attachedMedia.forEach((media, index) => {
+      const item = document.createElement('div');
+      item.className = 'media-preview-item';
+
+      if (media.type.startsWith('image/')) {
+        item.innerHTML = `<img src="${media.base64}" alt="photo" />`;
+      } else if (media.type.startsWith('video/')) {
+        item.innerHTML = `<video src="${media.base64}"></video>`;
+      } else if (media.type.startsWith('audio/')) {
+        item.innerHTML = `<div style="font-size:1.5rem; color:#fff; text-align:center;">🎵<div style="font-size:0.65rem; color:#ccc; margin-top:2px;">Audio</div></div>`;
+      }
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.type      = 'button';
+      removeBtn.textContent = '✕';
+      removeBtn.onclick = () => { attachedMedia.splice(index, 1); renderMediaPreviews(); };
+      item.appendChild(removeBtn);
+      container.appendChild(item);
+    });
+  }
+
+  // ──────────────────────────────────────────────
+  // UPLOAD MEDIA TO BACKEND / CLOUDINARY
+  // ──────────────────────────────────────────────
+  async function uploadMediaAttachments() {
+    if (!attachedMedia.length) return [];
+    const formData = new FormData();
+    attachedMedia.forEach((media) => {
+      const parts = media.base64.split(',');
+      const mime  = (parts[0].match(/:(.*?);/) || [])[1] || media.type;
+      const bytes = atob(parts[1]);
+      const data  = new Uint8Array(bytes.length);
+      for (let i = 0; i < bytes.length; i++) data[i] = bytes.charCodeAt(i);
+      formData.append('files', new Blob([data], { type: mime }), media.name || 'attachment');
+    });
+
+    const result = await apiUploadMedia(formData);
+    if (!result.success && !result.offline) throw new Error(result.message || 'Media upload failed.');
+    return result.files || [];
+  }
+
+  // ──────────────────────────────────────────────
+  // TAB 1: REGISTER PATIENT
+  // ──────────────────────────────────────────────
+  document.getElementById('register-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const name      = document.getElementById('patient-name').value.trim();
+    const age       = document.getElementById('patient-age').value.trim();
+    const gender    = document.getElementById('patient-gender').value;
+    const phone     = document.getElementById('patient-phone').value.trim();
+    const village   = document.getElementById('patient-village').value.trim();
+    const complaint = document.getElementById('chief-complaint').value.trim();
+    const duration  = document.getElementById('symptom-duration').value;
+    const conditions= document.getElementById('known-conditions').value.trim();
+    const meds      = document.getElementById('current-medications').value.trim();
+    const allergies = document.getElementById('allergies').value.trim();
+    const pregnancy = document.getElementById('pregnancy-status').value;
+
+    // Validation
+    let valid = true;
+    const setInvalid = (id, invalid) => {
+      document.getElementById(id).classList.toggle('is-invalid', invalid);
+      if (invalid) valid = false;
+    };
+    setInvalid('patient-name',   !name);
+    setInvalid('patient-age',    !age);
+    setInvalid('patient-gender', !gender);
+    if (!complaint && attachedMedia.length === 0) {
+      document.getElementById('chief-complaint').classList.add('is-invalid');
+      valid = false;
+    } else {
+      document.getElementById('chief-complaint').classList.remove('is-invalid');
+    }
+    if (!valid) { showToast('Please fill in required fields.', 'error'); return; }
+
+    const btn = document.getElementById('register-btn');
+    btn.disabled = true; btn.classList.add('loading'); btn.textContent = 'Saving…';
+
+    try {
+      let attachments = [];
+      if (navigator.onLine) {
+        attachments = await uploadMediaAttachments();
+      }
+
+      const patientData = {
+        name, age: parseInt(age), gender, phone, village,
+        chiefComplaint: complaint || '[Media Attachment Provided]',
+        attachments,
+        symptomDuration: duration, knownConditions: conditions,
+        currentMedications: meds, allergies,
+        pregnancyStatus: gender === 'Female' ? pregnancy : 'N/A',
+        status: 'waiting'
+      };
+
+      let patientId;
+      if (navigator.onLine) {
+        const result = await apiRegisterPatient(patientData);
+        if (!result || !result.success || !(result.patientId || result.id)) {
+          throw new Error(result?.message || 'Unable to register patient.');
+        }
+        patientId = result.patientId || result.id;
+        await savePatientLocally({ ...patientData, patientId });
+      } else {
+        patientId = await savePatientLocally(patientData);
+        await addToOfflineQueue('register_patient', { ...patientData, patientId });
+        showToast('⚠️ Saved locally (offline). Will sync when online.', 'warning');
+      }
+
+      currentPatientId   = patientId;
+      currentPatientName = name;
+      showToast(`✅ Patient "${name}" registered. ID: ${patientId}`, 'success');
+
+      // QR
+      generatePatientQR(patientId, 'qr-canvas');
+      document.getElementById('qr-patient-name').textContent = name;
+      document.getElementById('qr-patient-id').textContent   = patientId;
+      document.getElementById('qr-section').classList.remove('hidden');
+      document.getElementById('qr-placeholder').classList.add('hidden');
+
+      // Pre-fill later tabs
+      document.getElementById('vitals-patient-id').value    = patientId;
+      document.getElementById('triage-patient-id').value    = patientId;
+      document.getElementById('vitals-patient-name').textContent = 'Patient: ' + name;
+
+      document.querySelector('.tab-btn[onclick*="tab-vitals"]').click();
+
+    } catch (error) {
+      showToast('Error saving patient: ' + (error.message || 'Unknown'), 'error');
+      console.error('[INTAKE] Patient registration failed:', error);
+    } finally {
+      btn.disabled = false; btn.classList.remove('loading'); btn.textContent = 'Save & Continue to Vitals →';
+    }
+  });
+
+  // ──────────────────────────────────────────────
+  // TAB 2: VITAL RANGE CHECKS + LIVE BP DISPLAY
+  // ──────────────────────────────────────────────
+  function checkVitalRange() {
+    const alerts = [];
+    const temp   = parseFloat(document.getElementById('v-temp').value);
+    const spo2   = parseFloat(document.getElementById('v-spo2').value);
+    const pulse  = parseFloat(document.getElementById('v-pulse').value);
+    const bpSys  = parseFloat(document.getElementById('v-bp-sys').value);
+    const bpDia  = parseFloat(document.getElementById('v-bp-dia').value);
+
+    // Live BP display
+    const bpDisplay = document.getElementById('bp-live-display');
+    if (!isNaN(bpSys) && !isNaN(bpDia)) {
+      bpDisplay.textContent = `${bpSys}/${bpDia}`;
+      bpDisplay.style.color = (bpSys > 180 || bpDia > 120)
+        ? 'var(--red-light)' : (bpSys > 140 ? 'var(--amber-light)' : 'var(--text-primary)');
+    } else if (!isNaN(bpSys)) {
+      bpDisplay.textContent = `${bpSys}/—`;
+      bpDisplay.style.color = 'var(--text-muted)';
+    } else {
+      bpDisplay.textContent = '—/—';
+      bpDisplay.style.color = 'var(--text-muted)';
+    }
+
+    const tempBox  = document.getElementById('vbox-temp');
+    const spo2Box  = document.getElementById('vbox-spo2');
+    const pulseBox = document.getElementById('vbox-pulse');
+    const bpBox    = document.getElementById('vbox-bp');
+
+    if (!isNaN(temp)) {
+      if (temp >= 40)       { tempBox.classList.add('critical-vital');    alerts.push('🌡️ Temp ≥ 40°C — HIGH FEVER'); }
+      else if (temp >= 38.5){ tempBox.classList.add('abnormal');           alerts.push('🌡️ Temp ≥ 38.5°C — Elevated fever'); }
+      else                  { tempBox.classList.remove('critical-vital','abnormal'); }
+    }
+    if (!isNaN(spo2)) {
+      if (spo2 < 90)        { spo2Box.classList.add('critical-vital');   alerts.push('🫁 SpO₂ < 90% — CRITICAL'); }
+      else if (spo2 < 95)   { spo2Box.classList.add('abnormal');          alerts.push('🫁 SpO₂ < 95% — Low oxygen'); }
+      else                  { spo2Box.classList.remove('critical-vital','abnormal'); }
+    }
+    if (!isNaN(bpSys) && !isNaN(bpDia)) {
+      if (bpSys > 180 || bpDia > 120)  { bpBox.classList.add('critical-vital'); alerts.push('💉 BP > 180/120 — HYPERTENSIVE CRISIS'); }
+      else if (bpSys < 90)              { bpBox.classList.add('critical-vital'); alerts.push('💉 BP SYS < 90 — HYPOTENSION / Shock risk'); }
+      else if (bpSys > 140)             { bpBox.classList.add('abnormal');        alerts.push('💉 BP > 140 — Elevated'); }
+      else                              { bpBox.classList.remove('critical-vital','abnormal'); }
+    }
+    if (!isNaN(pulse)) {
+      if (pulse > 150 || pulse < 40)   { pulseBox.classList.add('critical-vital'); alerts.push('❤️ Pulse ' + pulse + ' bpm — CRITICAL'); }
+      else if (pulse > 100 || pulse < 60){ pulseBox.classList.add('abnormal'); }
+      else                              { pulseBox.classList.remove('critical-vital','abnormal'); }
+    }
+
+    const alertDiv = document.getElementById('vitals-alert');
+    if (alerts.length > 0) {
+      document.getElementById('vitals-alert-msg').innerHTML = alerts.join('<br>');
+      alertDiv.classList.remove('hidden');
+    } else {
+      alertDiv.classList.add('hidden');
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  // TAB 2: SAVE VITALS
+  // ──────────────────────────────────────────────
+  document.getElementById('vitals-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const patientId = document.getElementById('vitals-patient-id').value;
+    if (!patientId) { showToast('Please register a patient first (Tab 1).', 'error'); return; }
+
+    const vitals = {
+      temperature:      document.getElementById('v-temp').value    || null,
+      bpSystolic:       document.getElementById('v-bp-sys').value  || null,
+      bpDiastolic:      document.getElementById('v-bp-dia').value  || null,
+      spo2:             document.getElementById('v-spo2').value    || null,
+      pulseRate:        document.getElementById('v-pulse').value   || null,
+      weight:           document.getElementById('v-weight').value  || null,
+      respiratoryRate:  document.getElementById('v-rr').value      || null,
+      notes:            document.getElementById('v-notes').value   || '',
+      recordedAt:       new Date().toISOString()
+    };
+
+    const btn = document.getElementById('vitals-btn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    try {
+      await updatePatientLocally({ patientId, vitals });
+      if (navigator.onLine) {
+        await apiSaveVitals(patientId, vitals);
+      } else {
+        await addToOfflineQueue('save_vitals', { patientId, vitals });
+      }
+      showToast('✅ Vitals saved. Proceed to AI Triage.', 'success');
+      document.getElementById('triage-patient-id').value = patientId;
+      document.querySelector('.tab-btn[onclick*="tab-triage"]').click();
+    } catch (error) {
+      showToast('Error saving vitals: ' + (error.message || 'Unknown'), 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Save Vitals & Continue →';
+    }
+  });
+
+  // ──────────────────────────────────────────────
+  // TAB 4: AI TRIAGE SUBMISSION
+  // ──────────────────────────────────────────────
+  document.getElementById('triage-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const patientId = document.getElementById('triage-patient-id').value;
+    if (!patientId) { showToast('Please complete patient registration and vitals first.', 'error'); return; }
+
+    const symptoms = Array.from(
+      document.querySelectorAll('#symptom-checklist input[type=checkbox]:checked')
+    ).map(cb => cb.value);
+
+    const notes = document.getElementById('triage-notes').value.trim();
+    if (!symptoms.length && !notes) {
+      showToast('Please select at least one symptom or enter clinical notes.', 'error');
+      return;
+    }
+
+    const patient = await getPatientById(patientId) || {};
+    const vitals  = patient.vitals || {};
+
+    const triageData = {
+      patientId,
+      symptoms,
+      vitals,
+      chiefComplaint:    patient.chiefComplaint || '',
+      age:               patient.age,
+      gender:            patient.gender,
+      knownConditions:   patient.knownConditions,
+      currentMedications:patient.currentMedications,
+      allergies:         patient.allergies,
+      symptomDuration:   patient.symptomDuration,
+      additionalNotes:   notes
+    };
+
+    const btn = document.getElementById('triage-btn');
+    btn.disabled = true; btn.textContent = 'Analyzing with Gemini AI…';
+    document.getElementById('triage-loading').classList.remove('hidden');
+    document.getElementById('triage-result').classList.add('hidden');
+
+    try {
+      const result = await apiSubmitAssessment(triageData);
+
+      document.getElementById('triage-loading').classList.add('hidden');
+
+      // Accept both full success (online Gemini) AND rule-based fallback
+      // Rule-based returns success:true with condition/urgency but may lack assessmentId
+      if (!result.success && !result.condition) {
+        throw new Error(result.message || 'AI assessment failed.');
+      }
+
+      // Populate result
+      document.getElementById('result-condition').textContent   = result.condition || 'Unable to determine';
+      document.getElementById('result-confidence').textContent  = result.confidence || '—';
+
+      const urgency = (result.urgency || 'moderate').toLowerCase();
+      const urgencyEl = document.getElementById('result-urgency');
+      urgencyEl.textContent = result.urgency || '—';
+      urgencyEl.style.color = urgency === 'critical' ? 'var(--red-light)' :
+                               urgency === 'high'     ? 'var(--amber-light)' :
+                               urgency === 'low'      ? 'var(--green-light)' : 'var(--text-primary)';
+
+      const recList = document.getElementById('result-recommendations');
+      recList.innerHTML = '';
+      (result.recommendations || []).forEach(rec => {
+        const li = document.createElement('li');
+        li.textContent = rec;
+        recList.appendChild(li);
+      });
+
+      document.getElementById('result-reasoning').textContent = result.reasoning || 'No reasoning provided.';
+
+      // Red flags
+      const redFlags = result.red_flags_present || [];
+      const rfBox = document.getElementById('red-flags-box');
+      if (redFlags.length > 0) {
+        const rfList = document.getElementById('result-red-flags');
+        rfList.innerHTML = '';
+        redFlags.forEach(f => {
+          const li = document.createElement('li');
+          li.textContent = '🚨 ' + f;
+          rfList.appendChild(li);
+        });
+        rfBox.classList.remove('hidden');
+      } else {
+        rfBox.classList.add('hidden');
+      }
+
+      // Badge
+      const badge = document.getElementById('result-status-badge');
+      badge.className = 'badge badge-ai-draft';
+      badge.textContent = '⚠️ AI Draft (Unverified)';
+
+      // Store assessment ID for sendToDoctor
+      document.getElementById('triage-result').dataset.assessmentId = result.assessmentId || '';
+
+      document.getElementById('triage-result').classList.remove('hidden');
+      document.getElementById('sent-to-doctor-banner').classList.add('hidden');
+
+      if (result.refer_immediately) {
+        showToast('🚨 REFER IMMEDIATELY — Critical case detected!', 'error');
+      } else {
+        showToast('✅ AI assessment complete. Review and send to doctor.', 'success');
+      }
+
+    } catch (error) {
+      document.getElementById('triage-loading').classList.add('hidden');
+      showToast('AI assessment failed: ' + (error.message || 'Please try again.'), 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = '🤖 Submit for AI Assessment';
+    }
+  });
+
+  // ──────────────────────────────────────────────
+  // SEND TO DOCTOR
+  // ──────────────────────────────────────────────
+  async function sendToDoctor() {
+    const patientId = document.getElementById('triage-patient-id').value;
+    if (!patientId) { showToast('No patient selected.', 'error'); return; }
+
+    const condition  = document.getElementById('result-condition').textContent;
+    const urgency    = document.getElementById('result-urgency').textContent;
+    const reasoning  = document.getElementById('result-reasoning').textContent;
+    const recs       = Array.from(document.querySelectorAll('#result-recommendations li')).map(li => li.textContent);
+
+    try {
+      // The assessment is already in the DB from apiSubmitAssessment.
+      // Just notify success so the doctor portal can show it.
+      showToast('✅ Case forwarded to Doctor Portal for review.', 'success');
+      document.getElementById('sent-to-doctor-banner').classList.remove('hidden');
+    } catch (err) {
+      showToast('Failed to send to doctor: ' + (err.message || 'Error'), 'error');
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  // LOAD PATIENT FROM URL
+  // ──────────────────────────────────────────────
+  async function loadPatientFromId(patientId) {
+    try {
+      let patient;
+      if (navigator.onLine) {
+        const res = await apiGetPatient(patientId);
+        patient   = res.patient;
+      } else {
+        patient = await getPatientById(patientId);
+      }
+      if (!patient) return;
+      populateRegisterForm(patient);
+      currentPatientId   = patient.patientId || patientId;
+      currentPatientName = patient.name;
+
+      document.getElementById('loaded-patient-banner').classList.remove('hidden');
+      document.getElementById('loaded-patient-info').textContent =
+        `${patient.name}, ${patient.age} yrs, ${patient.gender} — ID: ${currentPatientId}`;
+
+      document.getElementById('vitals-patient-id').value    = currentPatientId;
+      document.getElementById('triage-patient-id').value    = currentPatientId;
+      document.getElementById('vitals-patient-name').textContent = 'Patient: ' + patient.name;
+
+      generatePatientQR(currentPatientId, 'qr-canvas');
+      document.getElementById('qr-patient-name').textContent = patient.name;
+      document.getElementById('qr-patient-id').textContent   = currentPatientId;
+      document.getElementById('qr-section').classList.remove('hidden');
+      document.getElementById('qr-placeholder').classList.add('hidden');
+    } catch (e) {
+      console.warn('loadPatientFromId failed:', e);
+    }
+  }
+
+  function populateRegisterForm(patient) {
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+    set('patient-id-field',   patient.patientId || '');
+    set('patient-name',       patient.name);
+    set('patient-age',        patient.age);
+    set('patient-gender',     patient.gender);
+    set('patient-phone',      patient.phone);
+    set('patient-village',    patient.village);
+    set('chief-complaint',    patient.chiefComplaint);
+    set('symptom-duration',   patient.symptomDuration);
+    set('known-conditions',   patient.knownConditions);
+    set('current-medications',patient.currentMedications);
+    set('allergies',          patient.allergies);
+    if (patient.gender === 'Female') {
+      document.getElementById('pregnancy-field').classList.remove('hidden');
+      set('pregnancy-status', patient.pregnancyStatus);
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  // QR SCANNER WIRING
+  // ──────────────────────────────────────────────
+  function handleStartScan() {
+    const video    = document.getElementById('qr-scanner-video');
+    const frame    = document.getElementById('scan-frame');
+    const statusEl = document.getElementById('scan-status');
+
+    video.style.display = 'block';
+    frame.style.display = 'block';
+    statusEl.textContent = 'Scanning…';
+
+    document.getElementById('start-scan-btn').classList.add('hidden');
+    document.getElementById('stop-scan-btn').classList.remove('hidden');
+
+    startQRScanner('qr-scanner-video', function (patientId) {
+      handleStopScan();
+      document.getElementById('scan-result-text').textContent = 'Patient ID: ' + patientId;
+      document.getElementById('scan-result-link').href = '/intake.html?id=' + encodeURIComponent(patientId);
+      document.getElementById('scan-result').classList.remove('hidden');
+      statusEl.textContent = '✅ QR scanned!';
+    });
+  }
+
+  function handleStopScan() {
+    stopQRScanner();
+    const video = document.getElementById('qr-scanner-video');
+    const frame = document.getElementById('scan-frame');
+    if (video) { video.style.display = 'none'; }
+    if (frame) { frame.style.display = 'none'; }
+    document.getElementById('scan-status').textContent = 'Camera is off';
+    document.getElementById('start-scan-btn').classList.remove('hidden');
+    document.getElementById('stop-scan-btn').classList.add('hidden');
+  }
+
+  function handleModalStartScan() {
+    const video    = document.getElementById('modal-qr-video');
+    const frame    = document.getElementById('modal-scan-frame');
+    const statusEl = document.getElementById('modal-scan-status');
+
+    video.style.display = 'block';
+    frame.style.display = 'block';
+    statusEl.textContent = 'Scanning…';
+
+    startQRScanner('modal-qr-video', function (patientId) {
+      handleStopScan();
+      closeModal('scan-modal');
+      document.getElementById('loaded-patient-banner').classList.remove('hidden');
+      document.getElementById('loaded-patient-info').textContent = 'Loading patient ID: ' + patientId;
+      loadPatientFromId(patientId);
+    });
+  }
+  </script>
+</body>
+</html>
