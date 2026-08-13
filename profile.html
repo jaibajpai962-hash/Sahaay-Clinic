@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sahaay Clinic — My Profile</title>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#238636" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        { pageLanguage: 'en', includedLanguages: 'hi,ta,bn,te,mr,gu,kn,ml,pa,ur,or,as,en',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false },
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/index.html" class="navbar-brand"><div class="logo-icon">🏥</div>Sahaay Clinic</a>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu" onclick="toggleMobileNav()">☰</button>
+    <ul class="navbar-nav" id="navbar-nav">
+      <li><a href="/index.html">Dashboard</a></li>
+      <li><a href="/intake.html">New Patient</a></li>
+      <li><a href="/firstaid.html">First Aid</a></li>
+      <li><a href="/doctor.html">Doctor Portal</a></li>
+    </ul>
+    <div class="navbar-actions">
+      <span class="lang-selector-mount"></span>
+      <span id="network-status" class="status-indicator status-online"><span class="status-dot"></span> Online</span>
+      <a href="/profile.html" class="profile-btn active" title="My Profile"><span class="profile-avatar">👤</span></a>
+      <a href="/index.html" class="btn btn-secondary btn-sm">← Back</a>
+    </div>
+  </nav>
+
+  <div class="page-container" style="max-width:680px;">
+    <div class="page-header">
+      <h1 class="page-title">👤 My Profile</h1>
+      <p class="page-subtitle">Health worker account information and app settings.</p>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="card" style="margin-bottom:var(--space-lg);">
+      <div class="card-header">
+        <span class="card-title">Account Details</span>
+        <span class="badge badge-info" id="profile-role-badge">Health Worker</span>
+      </div>
+      <div class="card-body">
+        <div style="display:flex; align-items:center; gap:var(--space-lg); margin-bottom:var(--space-lg); flex-wrap:wrap;">
+          <div style="width:72px; height:72px; background:var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2.2rem; flex-shrink:0;">👤</div>
+          <div>
+            <div id="profile-name" style="font-size:1.3rem; font-weight:700; color:var(--text-primary);">—</div>
+            <div id="profile-worker-id" style="font-family:var(--font-mono); font-size:0.85rem; color:var(--text-muted); margin-top:4px;"></div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <div class="form-label">Phone</div>
+            <div id="profile-phone" style="color:var(--text-secondary); font-size:0.9rem;">—</div>
+          </div>
+          <div>
+            <div class="form-label">District</div>
+            <div id="profile-district" style="color:var(--text-secondary); font-size:0.9rem;">—</div>
+          </div>
+        </div>
+
+        <div style="margin-top:var(--space-md);">
+          <div class="form-label">Account Status</div>
+          <span class="badge badge-verified">✅ Active</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- App Settings -->
+    <div class="card" style="margin-bottom:var(--space-lg);">
+      <div class="card-header"><span class="card-title">⚙️ App Settings</span></div>
+      <div class="card-body">
+
+        <div class="form-group">
+          <div class="form-label">Offline Storage Status</div>
+          <div id="storage-info" class="text-muted" style="font-size:0.88rem;">Checking…</div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">Network Status</div>
+          <span id="profile-network" class="status-indicator status-online"><span class="status-dot"></span> Online</span>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <div class="form-label">Service Worker Cache</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">
+            <button onclick="clearCacheAndReload()" class="btn btn-secondary btn-sm">🔄 Clear Cache &amp; Reload</button>
+            <button onclick="syncOfflineQueue()" class="btn btn-secondary btn-sm">📤 Sync Offline Queue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Password -->
+    <div class="card" style="margin-bottom:var(--space-lg);">
+      <div class="card-header"><span class="card-title">🔑 Change Password</span></div>
+      <div class="card-body">
+        <form id="change-password-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="cp-current">Current Password</label>
+            <input type="password" id="cp-current" class="form-control" placeholder="Enter current password" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cp-new">New Password</label>
+            <input type="password" id="cp-new" class="form-control" placeholder="Minimum 6 characters" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cp-confirm">Confirm New Password</label>
+            <input type="password" id="cp-confirm" class="form-control" placeholder="Repeat new password" />
+          </div>
+          <div id="cp-msg" class="alert hidden"></div>
+          <button type="submit" id="cp-btn" class="btn btn-primary">Update Password</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Logout -->
+    <div class="card">
+      <div class="card-body" style="text-align:center; padding:var(--space-lg);">
+        <p class="text-muted" style="margin-bottom:var(--space-md); font-size:0.9rem;">Ready to log out? Your offline data will remain safe on this device.</p>
+        <button onclick="handleLogout()" class="btn btn-danger">🚪 Log Out</button>
+      </div>
+    </div>
+
+  </div><!-- .page-container -->
+
+  <div id="offline-queue-badge" class="offline-queue-badge" onclick="syncOfflineQueue()">📤 0 records pending sync</div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/api.js"></script>
+
+  <script>
+  function toggleMobileNav() {
+    const nav = document.getElementById('navbar-nav');
+    const btn = document.getElementById('nav-hamburger');
+    if (!nav) return;
+    const open = nav.classList.toggle('open');
+    btn.textContent = open ? '✕' : '☰';
+  }
+  document.addEventListener('click', function (e) {
+    const nav = document.getElementById('navbar-nav');
+    const btn = document.getElementById('nav-hamburger');
+    if (!nav) return;
+    if (!nav.contains(e.target) && e.target !== btn) { nav.classList.remove('open'); if (btn) btn.textContent = '☰'; }
+  });
+
+  document.addEventListener('DOMContentLoaded', async function () {
+    await initApp();
+
+    // Load session
+    const session = await getSession();
+    if (!session) { window.location.href = '/index.html'; return; }
+
+    document.getElementById('profile-name').textContent      = session.name || session.workerId || 'Worker';
+    document.getElementById('profile-worker-id').textContent = 'ID: ' + (session.workerId || '—');
+    document.getElementById('profile-role-badge').textContent = session.role || 'Health Worker';
+    document.getElementById('profile-phone').textContent     = session.phone || 'Not provided';
+    document.getElementById('profile-district').textContent  = session.district || 'Not provided';
+
+    // Offline patients count
+    try {
+      const patients = await getAllLocalPatients();
+      const queue    = await getOfflineQueue();
+      document.getElementById('storage-info').textContent =
+        `${patients.length} patient(s) cached · ${queue.length} sync pending`;
+    } catch (e) {
+      document.getElementById('storage-info').textContent = 'Unable to read storage';
+    }
+  });
+
+  document.getElementById('change-password-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const current  = document.getElementById('cp-current').value;
+    const newPwd   = document.getElementById('cp-new').value;
+    const confirm  = document.getElementById('cp-confirm').value;
+    const msgDiv   = document.getElementById('cp-msg');
+    const btn      = document.getElementById('cp-btn');
+
+    msgDiv.classList.add('hidden');
+
+    if (!current || !newPwd || !confirm) {
+      msgDiv.className = 'alert alert-danger'; msgDiv.textContent = 'All fields are required.'; msgDiv.classList.remove('hidden'); return;
+    }
+    if (newPwd.length < 6) {
+      msgDiv.className = 'alert alert-danger'; msgDiv.textContent = 'New password must be at least 6 characters.'; msgDiv.classList.remove('hidden'); return;
+    }
+    if (newPwd !== confirm) {
+      msgDiv.className = 'alert alert-danger'; msgDiv.textContent = 'Passwords do not match.'; msgDiv.classList.remove('hidden'); return;
+    }
+
+    btn.disabled = true; btn.textContent = 'Updating…';
+    try {
+      // This endpoint doesn't exist yet but follows the pattern
+      const res = await makeRequest('/auth/change_password', {
+        method: 'POST',
+        body: JSON.stringify({ current_password: current, new_password: newPwd })
+      });
+      if (res.success) {
+        msgDiv.className = 'alert alert-success'; msgDiv.textContent = '✅ Password updated successfully.';
+        document.getElementById('change-password-form').reset();
+      } else {
+        throw new Error(res.message || 'Update failed.');
+      }
+    } catch (err) {
+      msgDiv.className = 'alert alert-danger'; msgDiv.textContent = err.message || 'Failed to update password.';
+    } finally {
+      msgDiv.classList.remove('hidden');
+      btn.disabled = false; btn.textContent = 'Update Password';
+    }
+  });
+
+  async function handleLogout() {
+    try { await apiLogout(); } catch (e) {}
+    await clearSession();
+    window.location.href = '/index.html';
+  }
+
+  function clearCacheAndReload() {
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      caches.keys().then(names => Promise.all(names.map(n => caches.delete(n))))
+        .then(() => { showToast('Cache cleared. Reloading…', 'success'); setTimeout(() => window.location.reload(true), 800); });
+    } else {
+      window.location.reload(true);
+    }
+  }
+  </script>
+</body>
+</html>
