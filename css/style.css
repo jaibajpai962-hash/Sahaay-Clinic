@@ -1,0 +1,1530 @@
+/**
+ * ============================================================
+ * FILE: css/style.css  —  Sahaay Clinic Global Stylesheet
+ * ============================================================
+ * DESIGN PHILOSOPHY:
+ *   - Dark theme to reduce eye strain during long shifts
+ *   - High contrast text for readability in bright/dim conditions
+ *   - Large tap targets for touch screens / mobile devices
+ *   - Simple, clean layout — no distracting animations
+ *   - Colour-coded clinical badges for safety (amber=AI, green=verified)
+ *
+ * COLOUR PALETTE:
+ *   Background:   #0d1117  (very dark blue-grey)
+ *   Surface:      #161b22  (card/panel background)
+ *   Border:       #30363d  (subtle borders)
+ *   Text Primary: #e6edf3  (off-white, easy to read)
+ *   Text Muted:   #8b949e  (grey for labels/hints)
+ *   Accent Green: #238636  (success / doctor-verified)
+ *   Accent Amber: #d29922  (warning / AI draft)
+ *   Accent Red:   #da3633  (danger / critical)
+ *   Accent Blue:  #1f6feb  (links / info)
+ * ============================================================
+ */
+
+/* ----------------------------------------------------------
+   1. CSS RESET & BASE STYLES
+   Removes browser default styles for consistency.
+   ---------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box; /* padding/border included in element size */
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* --- Colour Tokens (change these to retheme the whole app) --- */
+  --bg-base:        #0d1117;
+  --bg-surface:     #161b22;
+  --bg-elevated:    #1c2128;
+  --border:         #30363d;
+  --border-muted:   #21262d;
+
+  --text-primary:   #e6edf3;
+  --text-secondary: #c9d1d9;
+  --text-muted:     #8b949e;
+
+  --green:          #238636;
+  --green-light:    #2ea043;
+  --green-bg:       #0d2119;
+  --green-border:   #1a4731;
+
+  --amber:          #d29922;
+  --amber-light:    #e3b341;
+  --amber-bg:       #271d0a;
+  --amber-border:   #4d3510;
+
+  --red:            #da3633;
+  --red-light:      #f85149;
+  --red-bg:         #2d1111;
+  --red-border:     #551111;
+
+  --blue:           #1f6feb;
+  --blue-light:     #388bfd;
+  --blue-bg:        #051d40;
+  --blue-border:    #1158cc;
+
+  --purple:         #8957e5;
+
+  /* --- Spacing Scale --- */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --space-2xl: 48px;
+
+  /* --- Typography --- */
+  --font-sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono:  "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  16px;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ----------------------------------------------------------
+   2. TYPOGRAPHY
+   ---------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.3;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1.15rem; }
+h4 { font-size: 1rem; }
+
+p { color: var(--text-secondary); margin-bottom: var(--space-sm); }
+
+a {
+  color: var(--blue-light);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+small, .text-muted { color: var(--text-muted); font-size: 0.85rem; }
+
+/* ----------------------------------------------------------
+   3. LAYOUT: NAVIGATION BAR
+   ---------------------------------------------------------- */
+.navbar {
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-sm) var(--space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100; /* stays above content when scrolling */
+  /* prevent the bar itself from being taller than needed on small screens */
+  flex-wrap: nowrap;
+  gap: var(--space-sm);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.navbar-brand .logo-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--green);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  list-style: none;
+}
+
+.navbar-nav a {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
+}
+
+.navbar-nav a:hover,
+.navbar-nav a.active {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  text-decoration: none;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-left: auto; /* push to the right */
+}
+
+/* ----------------------------------------------------------
+   HAMBURGER BUTTON — visible only on mobile
+   ---------------------------------------------------------- */
+.nav-hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  color: var(--text-primary);
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Mobile nav: collapse nav links into a dropdown */
+@media (max-width: 768px) {
+  .nav-hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+  }
+
+  /* hide desktop actions (status pill, name, logout) on mobile — shown in menu */
+  .navbar-actions {
+    display: none;
+  }
+
+  /* the nav list slides down below the bar */
+  .navbar-nav {
+    display: none;
+    position: absolute;
+    top: 100%;        /* just below the navbar */
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: var(--space-sm) 0;
+    z-index: 99;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+
+  .navbar-nav.open {
+    display: flex;
+  }
+
+  .navbar-nav li { width: 100%; }
+
+  .navbar-nav a {
+    display: block;
+    padding: 12px var(--space-lg);
+    border-radius: 0;
+    font-size: 0.95rem;
+  }
+
+  /* Keep the navbar itself positioned so the dropdown anchors to it */
+  .navbar {
+    position: sticky;
+    top: 0;
+  }
+}
+
+/* ----------------------------------------------------------
+   4. LAYOUT: PAGE WRAPPER & CONTAINERS
+   ---------------------------------------------------------- */
+.page-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-lg);
+}
+
+.page-header {
+  margin-bottom: var(--space-xl);
+}
+
+.page-header .page-title {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-xs);
+}
+
+.page-header .page-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Two-column grid for wider screens */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+}
+
+/* Three-column grid for stats/cards */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+/* Stack to single column on mobile */
+@media (max-width: 768px) {
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .page-container {
+    padding: var(--space-md);
+  }
+  h1 { font-size: 1.4rem; }
+  /* Queue table: enable horizontal scroll on small screens */
+  .table-scroll-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Keep card padding comfortable on small phones */
+  .card {
+    padding: var(--space-md);
+  }
+  .card-header {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  /* Page header stacks on mobile */
+  .page-header.flex {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+}
+
+/* ----------------------------------------------------------
+   5. CARD COMPONENT
+   A "card" is a box that groups related content visually.
+   ---------------------------------------------------------- */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* .card-body { /* no extra styling needed — content flows naturally */ */
+
+.card-footer {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-muted);
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+}
+
+/* ----------------------------------------------------------
+   6. BUTTONS
+   ---------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+  text-decoration: none;
+  white-space: nowrap;
+  min-height: 42px; /* large tap target for touch screens */
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Primary — green action button */
+.btn-primary {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green-light);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--green-light);
+}
+
+/* Danger — red destructive action */
+.btn-danger {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red-light);
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--red-light);
+}
+
+/* Secondary — subtle outline button */
+.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+/* Ghost — minimal */
+.btn-ghost {
+  background: transparent;
+  color: var(--blue-light);
+  border-color: transparent;
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--blue-bg);
+}
+
+/* Size variants */
+.btn-sm { padding: 6px 12px; font-size: 0.82rem; min-height: 32px; }
+.btn-lg { padding: 14px 24px; font-size: 1rem; min-height: 50px; }
+.btn-full { width: 100%; }
+
+/* Loading spinner on button */
+.btn.loading::after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ----------------------------------------------------------
+   7. FORM ELEMENTS
+   ---------------------------------------------------------- */
+.form-group {
+  margin-bottom: var(--space-md);
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.form-label .required {
+  color: var(--red-light);
+  margin-left: 3px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  min-height: 42px;
+}
+
+/* Larger, clearer Blood Pressure input sizing for touch devices */
+#vbox-bp .form-control {
+  min-width: 110px;
+  min-height: 48px;
+  font-size: 1.05rem;
+  padding: 12px 10px;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.2);
+}
+
+.form-control::placeholder {
+  color: var(--text-muted);
+}
+
+select.form-control {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.form-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: var(--space-xs);
+}
+
+.form-error {
+  font-size: 0.8rem;
+  color: var(--red-light);
+  margin-top: var(--space-xs);
+  display: none; /* hidden by default, shown by JS */
+}
+
+.form-control.is-invalid {
+  border-color: var(--red);
+}
+
+.form-control.is-invalid + .form-error {
+  display: block;
+}
+
+/* Inline form row */
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-md);
+}
+
+/* ----------------------------------------------------------
+   8. CLINICAL SAFETY BADGES
+   These are the most important UI elements for patient safety.
+   AMBER = AI-generated draft (not yet verified by a doctor)
+   GREEN = Doctor has reviewed and approved
+   RED   = Critical / emergency alert
+   ---------------------------------------------------------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* ⚠️ AMBER: AI Draft — must be verified before acting on it */
+.badge-ai-draft {
+  background: var(--amber-bg);
+  color: var(--amber-light);
+  border: 1px solid var(--amber-border);
+}
+
+/* ✅ GREEN: Doctor Approved — safe to act on */
+.badge-verified {
+  background: var(--green-bg);
+  color: #56d364;
+  border: 1px solid var(--green-border);
+}
+
+/* 🔴 RED: Critical / Emergency */
+.badge-critical {
+  background: var(--red-bg);
+  color: var(--red-light);
+  border: 1px solid var(--red-border);
+}
+
+/* 🔵 BLUE: Info / Pending */
+.badge-info {
+  background: var(--blue-bg);
+  color: var(--blue-light);
+  border: 1px solid var(--blue-border);
+}
+
+/* ⚫ Muted: Discharged / Neutral */
+.badge-muted {
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+/* ----------------------------------------------------------
+   9. CLINICAL SAFETY ALERT BANNER
+   Shown above AI-generated content to warn the health worker.
+   ---------------------------------------------------------- */
+.alert {
+  padding: var(--space-md);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  display: flex;
+  gap: var(--space-sm);
+  align-items: flex-start;
+  margin-bottom: var(--space-md);
+  font-size: 0.9rem;
+}
+
+.alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+.alert-warning {
+  background: var(--amber-bg);
+  border-color: var(--amber-border);
+  color: var(--amber-light);
+}
+
+.alert-success {
+  background: var(--green-bg);
+  border-color: var(--green-border);
+  color: #56d364;
+}
+
+.alert-danger {
+  background: var(--red-bg);
+  border-color: var(--red-border);
+  color: var(--red-light);
+}
+
+.alert-info {
+  background: var(--blue-bg);
+  border-color: var(--blue-border);
+  color: var(--blue-light);
+}
+
+/* ----------------------------------------------------------
+   10. PATIENT QUEUE TABLE
+   ---------------------------------------------------------- */
+.queue-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.queue-table th {
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.queue-table td {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border-muted);
+  vertical-align: middle;
+}
+
+.queue-table tr:last-child td { border-bottom: none; }
+
+.queue-table tr:hover td {
+  background: var(--bg-elevated);
+  cursor: pointer;
+}
+
+.patient-name { font-weight: 600; color: var(--text-primary); }
+.patient-meta { font-size: 0.8rem; color: var(--text-muted); }
+
+/* ----------------------------------------------------------
+   11. STAT CARDS (Dashboard numbers)
+   ---------------------------------------------------------- */
+.stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: var(--space-xs);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.stat-card.green .stat-value { color: var(--green-light); }
+.stat-card.amber .stat-value { color: var(--amber-light); }
+.stat-card.red   .stat-value { color: var(--red-light); }
+.stat-card.blue  .stat-value { color: var(--blue-light); }
+
+/* ----------------------------------------------------------
+   12. QR CODE SECTION
+   ---------------------------------------------------------- */
+.qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+}
+
+#qr-canvas {
+  border: 3px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fff; /* QR codes need white background */
+  padding: 8px;
+}
+
+#qr-scanner-video {
+  width: 100%;
+  max-width: 320px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--blue);
+  background: #000;
+}
+
+.scanner-overlay {
+  position: relative;
+  display: inline-block;
+}
+
+.scanner-crosshair {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 2px solid var(--green);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 30px rgba(0,0,0,0.3);
+}
+
+/* ----------------------------------------------------------
+   13. VITALS GRID
+   ---------------------------------------------------------- */
+.vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.vital-box {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  text-align: center;
+}
+
+.vital-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.vital-unit {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.vital-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: var(--space-xs);
+}
+
+.vital-box.abnormal { border-color: var(--amber-border); }
+.vital-box.critical-vital { border-color: var(--red-border); }
+
+/* ----------------------------------------------------------
+   14. PROTOCOL STEPS LIST
+   ---------------------------------------------------------- */
+.steps-list {
+  list-style: none;
+  counter-reset: step-counter;
+}
+
+.steps-list li {
+  counter-increment: step-counter;
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--border-muted);
+  align-items: flex-start;
+}
+
+.steps-list li:last-child { border-bottom: none; }
+
+.steps-list li::before {
+  content: counter(step-counter);
+  background: var(--blue-bg);
+  color: var(--blue-light);
+  border: 1px solid var(--blue-border);
+  border-radius: 50%;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.red-flags-list {
+  list-style: none;
+}
+
+.red-flags-list li {
+  padding: var(--space-xs) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--red-light);
+  font-size: 0.9rem;
+}
+
+.red-flags-list li::before {
+  content: '⚠️';
+  font-size: 0.9rem;
+}
+
+/* ----------------------------------------------------------
+   15. STATUS INDICATOR (online/offline)
+   ---------------------------------------------------------- */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-online  .status-dot { background: var(--green-light); }
+.status-offline .status-dot { background: var(--amber-light); animation: pulse 1.5s infinite; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.status-online  { background: var(--green-bg);  color: #56d364; border: 1px solid var(--green-border); }
+.status-offline { background: var(--amber-bg);  color: var(--amber-light); border: 1px solid var(--amber-border); }
+
+/* ----------------------------------------------------------
+   16. LOGIN PAGE
+   ---------------------------------------------------------- */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  background: var(--bg-base);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.login-logo .logo-circle {
+  width: 64px;
+  height: 64px;
+  background: var(--green);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto var(--space-md);
+}
+
+/* ----------------------------------------------------------
+   17. TABS
+   ---------------------------------------------------------- */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-lg);
+  gap: 0;
+  overflow-x: auto; /* scroll on small screens */
+}
+
+.tab-btn {
+  padding: var(--space-sm) var(--space-lg);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab-btn:hover  { color: var(--text-primary); }
+.tab-btn.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--blue-light);
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ----------------------------------------------------------
+   18. OFFLINE QUEUE BADGE (floating pill)
+   ---------------------------------------------------------- */
+.offline-queue-badge {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  background: var(--amber-bg);
+  border: 1px solid var(--amber-border);
+  color: var(--amber-light);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: none; /* hidden when online */
+  z-index: 200;
+  cursor: pointer;
+}
+
+.offline-queue-badge.visible { display: flex; align-items: center; gap: 6px; }
+
+/* ----------------------------------------------------------
+   19. MODAL DIALOG
+   ---------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  padding: var(--space-lg);
+  display: none; /* toggled to flex by .open class */
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px;
+}
+.modal-close:hover { color: var(--text-primary); }
+
+/* ----------------------------------------------------------
+   20. UTILITY CLASSES
+   ---------------------------------------------------------- */
+.flex         { display: flex; }
+.flex-col     { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-sm       { gap: var(--space-sm); }
+.gap-md       { gap: var(--space-md); }
+.text-center  { text-align: center; }
+.mt-sm        { margin-top: var(--space-sm); }
+.mt-md        { margin-top: var(--space-md); }
+.mt-lg        { margin-top: var(--space-lg); }
+.mb-md        { margin-bottom: var(--space-md); }
+.mb-lg        { margin-bottom: var(--space-lg); }
+.w-full       { width: 100%; }
+.hidden       { display: none !important; }
+.truncate     { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Divider line */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: var(--space-lg) 0;
+}
+
+/* ----------------------------------------------------------
+   21. SCROLLBAR STYLING (Webkit browsers)
+   ---------------------------------------------------------- */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ----------------------------------------------------------
+   22. TABLE SCROLL WRAPPER
+   Wraps any table in a horizontally-scrollable container.
+   Apply class="table-scroll-wrapper" to a div around the table.
+   ---------------------------------------------------------- */
+.table-scroll-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-sm);
+}
+
+/* ----------------------------------------------------------
+   23. DEMO / DEV HINT BOX
+   ---------------------------------------------------------- */
+.demo-hint {
+  background: var(--blue-bg);
+  border: 1px solid var(--blue-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.8rem;
+  color: var(--blue-light);
+  margin-top: var(--space-md);
+  text-align: center;
+}
+
+.demo-hint code {
+  background: rgba(56,139,253,0.12);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+/* ----------------------------------------------------------
+   24. PAGE TRANSITION FADE
+   Smooth fade-in when switching views
+   ---------------------------------------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* ----------------------------------------------------------
+   25. PRINT STYLES (for printing patient summaries)
+   ---------------------------------------------------------- */
+@media print {
+  body { background: #fff; color: #000; }
+  .navbar, .btn, .offline-queue-badge, .nav-hamburger { display: none !important; }
+  .card { border: 1px solid #ccc; page-break-inside: avoid; }
+  .badge-ai-draft { background: #fff3cd !important; color: #856404 !important; border-color: #ffc107 !important; }
+  .badge-verified { background: #d1e7dd !important; color: #0f5132 !important; border-color: #198754 !important; }
+}
+
+/* ----------------------------------------------------------
+   26. BLOOD PRESSURE BOX — larger, clearer inputs
+   ---------------------------------------------------------- */
+#vbox-bp {
+  grid-column: span 2; /* take 2 columns in the vitals grid */
+}
+
+#vbox-bp .flex {
+  align-items: center;
+  gap: 10px;
+}
+
+#vbox-bp .form-control {
+  min-width: 120px;
+  min-height: 56px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+#vbox-bp .vital-unit {
+  font-size: 0.85rem;
+  margin-top: 6px;
+  display: block;
+  text-align: center;
+}
+
+#vbox-bp .bp-separator {
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* ----------------------------------------------------------
+   27. PROFILE BUTTON in navbar
+   ---------------------------------------------------------- */
+.profile-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.profile-btn:hover {
+  background: var(--bg-surface);
+  border-color: var(--blue-light);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.profile-btn .profile-avatar {
+  width: 24px;
+  height: 24px;
+  background: var(--green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* ----------------------------------------------------------
+   28. AI TRIAGE RESULT CARD
+   ---------------------------------------------------------- */
+.ai-result-card {
+  background: var(--amber-bg);
+  border: 1px solid var(--amber-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  margin-top: var(--space-md);
+}
+
+.ai-result-card.verified {
+  background: var(--green-bg);
+  border-color: var(--green-border);
+}
+
+.ai-reasoning-box {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ----------------------------------------------------------
+   29. DOCTOR VERIFICATION PORTAL — first-time overlay
+   ---------------------------------------------------------- */
+.doctor-verify-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  overflow-y: auto;
+}
+
+.doctor-verify-overlay .verify-modal {
+  background: var(--bg-surface);
+  border: 2px solid var(--blue-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  width: 100%;
+  max-width: 680px;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+/* ----------------------------------------------------------
+   30. MEDIA PREVIEW
+   ---------------------------------------------------------- */
+.media-preview-item {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.media-preview-item img,
+.media-preview-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-preview-item .remove-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ----------------------------------------------------------
+   31. FIRST AID AI ANALYZE SECTION
+   ---------------------------------------------------------- */
+.firstaid-ai-section {
+  background: var(--blue-bg);
+  border: 1px solid var(--blue-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.protocol-new-badge {
+  background: var(--purple);
+  color: #fff;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ----------------------------------------------------------
+   32. TELECONSULT PATIENT REQUESTS SIDEBAR (doctor portal)
+   ---------------------------------------------------------- */
+.teleconsult-request-item {
+  padding: var(--space-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-sm);
+  background: var(--bg-elevated);
+}
+.teleconsult-request-item:hover {
+  border-color: var(--blue-light);
+}
+.teleconsult-request-item .tc-patient-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.teleconsult-request-item .tc-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ----------------------------------------------------------
+   33. LANGUAGE SELECTOR GRID
+   ---------------------------------------------------------- */
+.language-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.language-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+.language-chip.selected {
+  border-color: var(--green-light);
+  background: var(--green-bg);
+  color: #56d364;
+}
+.language-chip input[type=checkbox] {
+  accent-color: var(--green-light);
+  width: 14px;
+  height: 14px;
+}
+
+/* ----------------------------------------------------------
+   34. SIGNUP / FORGOT PASSWORD TOGGLE
+   ---------------------------------------------------------- */
+.auth-toggle {
+  text-align: center;
+  margin-top: var(--space-md);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.auth-toggle a, .auth-toggle button {
+  color: var(--blue-light);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.88rem;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.auth-panel {
+  display: none;
+  animation: fadeIn 0.2s ease-out;
+}
+.auth-panel.active { display: block; }
+
+/* ----------------------------------------------------------
+   35. COMPLETED / AWAITING SECTIONS on dashboard
+   ---------------------------------------------------------- */
+.dashboard-section-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+  margin-top: var(--space-lg);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--border-muted);
+}
+
+/* Awaiting triage row highlight */
+.queue-table tr.row-waiting td { background: rgba(210,153,34,0.05); }
+.queue-table tr.row-completed td { background: rgba(46,160,67,0.05); }
+.queue-table tr.row-critical td { background: rgba(218,54,51,0.08); }
+
+/* ----------------------------------------------------------
+   36. RESPONSIVE IMPROVEMENTS
+   ---------------------------------------------------------- */
+@media (max-width: 600px) {
+  #vbox-bp {
+    grid-column: span 1;
+  }
+  #vbox-bp .form-control {
+    min-width: 70px;
+    font-size: 1.1rem;
+  }
+  .vitals-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .login-card {
+    padding: var(--space-lg);
+  }
+  .profile-btn span.profile-name {
+    display: none; /* hide name on very small screens, show avatar only */
+  }
+}
+
+@media (max-width: 480px) {
+  .tabs {
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    flex: 1 1 40%;
+    text-align: center;
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.82rem;
+  }
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ----------------------------------------------------------
+   37. QR Scanner improvements
+   ---------------------------------------------------------- */
+.qr-scan-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 320px;
+}
+.qr-scan-wrapper video {
+  width: 100%;
+  border-radius: 8px;
+  border: 2px solid var(--blue);
+  background: #000;
+}
+.qr-scan-frame {
+  position: absolute;
+  inset: 10%;
+  border: 3px solid var(--green-light);
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
+}
+
+/* ============================================================
+   NATIVE LANGUAGE SELECTOR  (appended — all pages)
+   Each option is displayed in its own script, e.g. हिंदी not "Hindi"
+   ============================================================ */
+
+/* The compact pill shown in the navbar */
+.lang-selector-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.lang-selector-btn {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  border-radius: 20px;
+  padding: 4px 10px 4px 8px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+.lang-selector-btn:hover { border-color: var(--green-light); background: var(--bg-surface); }
+.lang-selector-btn .lang-arrow { font-size: 0.65rem; opacity: 0.7; }
+
+/* Dropdown panel */
+.lang-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px;
+  z-index: 3000;
+  min-width: 180px;
+  max-height: 280px;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.lang-selector-wrap.open .lang-dropdown { display: block; }
+
+.lang-option {
+  display: block;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
+  transition: background 0.12s;
+}
+.lang-option:hover, .lang-option.active { background: var(--bg-surface); color: var(--text-primary); }
+.lang-option.active { font-weight: 600; color: var(--green-light); }
+
+/* ============================================================
+   LANGUAGE CHIP GRID  (used in doctor verification form)
+   ============================================================ */
+.language-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+.language-chip:hover { border-color: var(--green-light); }
+.language-chip.selected { border-color: var(--green-light); background: var(--green-bg); color: var(--green-light); }
+.language-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+
+/* Sahaay native-language selector is the visible translator UI. */
+.goog-te-gadget { font-size: 0 !important; }
+.goog-te-gadget > span { display: none !important; }
+.goog-te-gadget-simple { display: none !important; }
+.goog-te-banner-frame.skiptranslate { display: none !important; }
+body { top: 0 !important; }
