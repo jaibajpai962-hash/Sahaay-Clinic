@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sahaay Clinic — First Aid Guide</title>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#238636" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        { pageLanguage: 'en', includedLanguages: 'hi,ta,bn,te,mr,gu,kn,ml,pa,ur,or,as,en',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false },
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/index.html" class="navbar-brand"><div class="logo-icon">🏥</div>Sahaay Clinic</a>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu" onclick="toggleMobileNav()">☰</button>
+    <ul class="navbar-nav" id="navbar-nav">
+      <li><a href="/index.html">Dashboard</a></li>
+      <li><a href="/intake.html">New Patient</a></li>
+      <li><a href="/firstaid.html" class="active">First Aid</a></li>
+      <li><a href="/doctor.html">Doctor Portal</a></li>
+    </ul>
+    <div class="navbar-actions">
+      <span class="lang-selector-mount"></span>
+      <span id="network-status" class="status-indicator status-online"><span class="status-dot"></span> Online</span>
+      <a href="/profile.html" class="profile-btn" title="My Profile"><span class="profile-avatar">👤</span></a>
+      <a href="/index.html" class="btn btn-secondary btn-sm">← Back</a>
+    </div>
+  </nav>
+
+  <div class="page-container">
+
+    <div class="page-header">
+      <h1 class="page-title">📋 Offline First Aid &amp; OTC Dosage Guide</h1>
+      <p class="page-subtitle">Step-by-step protocols for common conditions. Loads from local storage — 100% offline capable.</p>
+    </div>
+
+    <div class="alert alert-success" style="margin-bottom:var(--space-lg);">
+      <span class="alert-icon">✅</span>
+      <div><strong>Works Fully Offline</strong> — All protocols stored locally on this device. No internet needed.</div>
+    </div>
+
+    <!-- ──────────────────────────────────────────
+         AI SYMPTOM ANALYSIS (new symptom → Gemini)
+    ────────────────────────────────────────── -->
+    <div class="firstaid-ai-section">
+      <h3 style="margin-bottom:var(--space-sm);">🤖 AI Symptom Analyzer (Gemini)</h3>
+      <p class="text-muted" style="font-size:0.88rem; margin-bottom:var(--space-md);">
+        Enter any medical symptom or condition not in the guide below. Gemini AI will analyze it and generate a first-aid protocol, which is then saved for offline use.
+      </p>
+      <form id="ai-symptom-form" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+        <div class="form-group" style="flex:1; min-width:200px; margin-bottom:0;">
+          <label class="form-label" for="ai-symptom-input">Describe symptom or condition</label>
+          <input type="text" id="ai-symptom-input" class="form-control"
+            placeholder="e.g., snake bite, dengue fever, eye infection…" />
+        </div>
+        <button type="submit" id="ai-analyze-btn" class="btn btn-primary" style="min-width:140px;">
+          🤖 Analyze with AI
+        </button>
+      </form>
+
+      <!-- Loading state -->
+      <div id="ai-symptom-loading" style="display:none; margin-top:var(--space-md); color:var(--blue-light); font-size:0.9rem;">
+        🤖 Analyzing with Gemini AI… (may take 5–10 seconds)
+      </div>
+
+      <!-- AI Result preview -->
+      <div id="ai-result-preview" style="display:none; margin-top:var(--space-md);">
+        <div class="alert alert-success" style="margin-bottom:0;">
+          <span class="alert-icon">✅</span>
+          <div>
+            <strong id="ai-result-title">Protocol Generated</strong>
+            <span class="protocol-new-badge" style="margin-left:8px;">NEW</span><br>
+            <small id="ai-result-meta" style="color:inherit;"></small><br>
+            <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+              <button onclick="saveAndShowProtocol()" class="btn btn-primary btn-sm">💾 Save &amp; View Protocol</button>
+              <button onclick="discardAiResult()" class="btn btn-secondary btn-sm">✕ Discard</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="form-group" style="max-width:520px; margin-bottom:var(--space-lg);">
+      <input type="search" id="protocol-search" class="form-control"
+        placeholder="🔍  Search protocols (e.g., fever, burn, snake bite)…"
+        oninput="filterProtocols(this.value)" />
+    </div>
+
+    <!-- CATEGORY FILTERS -->
+    <div id="category-filters" class="flex gap-sm" style="flex-wrap:wrap; margin-bottom:var(--space-lg);"></div>
+
+    <!-- LOADING -->
+    <div id="protocols-loading" class="text-center text-muted" style="padding:48px;">
+      <div style="font-size:2rem; margin-bottom:12px;">📋</div>
+      Loading protocols…
+    </div>
+
+    <!-- ERROR -->
+    <div id="protocols-error" class="alert alert-danger hidden">
+      <span class="alert-icon">❌</span>
+      <div><strong>Failed to Load Protocols</strong><br><span id="protocols-error-msg">Unknown error</span></div>
+    </div>
+
+    <!-- PROTOCOL CARDS GRID -->
+    <div id="protocols-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:var(--space-lg);"></div>
+
+    <!-- NO RESULTS -->
+    <div id="no-results" class="text-center text-muted hidden" style="padding:48px;">
+      <div style="font-size:2rem; margin-bottom:12px;">🔍</div>
+      <strong>No protocols match your search.</strong><br>
+      <small>Try a different keyword or use the AI Analyzer above.</small>
+    </div>
+
+    <!-- DETAIL PANEL -->
+    <div id="detail-panel" class="hidden" style="margin-top:var(--space-xl);">
+      <div class="card">
+        <div class="card-header">
+          <span id="detail-title" class="card-title" style="font-size:1.1rem;"></span>
+          <div class="flex gap-sm items-center">
+            <span id="detail-urgency-badge" class="badge"></span>
+            <button onclick="closeDetail()" class="btn btn-secondary btn-sm">✕ Close</button>
+          </div>
+        </div>
+        <div class="card-body">
+
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'detail-tab-steps')">📋 Steps</button>
+            <button class="tab-btn" onclick="switchTab(this,'detail-tab-meds')">💊 OTC Medications</button>
+            <button class="tab-btn" onclick="switchTab(this,'detail-tab-flags')">🚨 Red Flags</button>
+          </div>
+
+          <div id="detail-tab-steps" class="tab-panel active">
+            <ol id="detail-steps" class="steps-list"></ol>
+          </div>
+
+          <div id="detail-tab-meds" class="tab-panel">
+            <div id="detail-meds-content"></div>
+          </div>
+
+          <div id="detail-tab-flags" class="tab-panel">
+            <div class="alert alert-danger" style="margin-bottom:var(--space-md);">
+              <span class="alert-icon">🚨</span>
+              <div><strong>Refer Immediately if any of these signs are present:</strong></div>
+            </div>
+            <ul id="detail-red-flags" class="red-flags-list"></ul>
+            <div class="card" style="margin-top:var(--space-md); background:var(--red-bg); border-color:var(--red-border);">
+              <strong style="color:var(--red-light);">Refer if:</strong>
+              <p id="detail-refer-if" style="color:var(--text-secondary); margin-top:4px; margin-bottom:0;"></p>
+            </div>
+          </div>
+
+        </div>
+        <div class="card-footer">
+          <button onclick="window.print()" class="btn btn-secondary btn-sm">🖨 Print Protocol</button>
+          <a href="/intake.html" class="btn btn-primary btn-sm">➕ New Patient</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .page-container -->
+
+  <!-- Floating offline badge -->
+  <div id="offline-queue-badge" class="offline-queue-badge" onclick="syncOfflineQueue()">📤 0 records pending sync</div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/api.js"></script>
+
+  <script>
+  // ──────────────────────────────────────────────
+  // MOBILE NAV
+  // ──────────────────────────────────────────────
+  function toggleMobileNav() {
+    const nav = document.getElementById('navbar-nav');
+    const btn = document.getElementById('nav-hamburger');
+    if (!nav) return;
+    const open = nav.classList.toggle('open');
+    btn.textContent = open ? '✕' : '☰';
+  }
+  document.addEventListener('click', function (e) {
+    const nav = document.getElementById('navbar-nav');
+    const btn = document.getElementById('nav-hamburger');
+    if (!nav) return;
+    if (!nav.contains(e.target) && e.target !== btn) {
+      nav.classList.remove('open');
+      if (btn) btn.textContent = '☰';
+    }
+  });
+
+  let allProtocols   = [];
+  let activeCategory = 'All';
+  let pendingAiProtocol = null; // temp store for AI-generated protocol before save
+
+  // ──────────────────────────────────────────────
+  // INIT
+  // ──────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', async function () {
+    await initApp();
+    await loadProtocols();
+  });
+
+  // ──────────────────────────────────────────────
+  // LOAD PROTOCOLS FROM LOCAL JSON
+  // ──────────────────────────────────────────────
+  async function loadProtocols() {
+    try {
+      const response = await fetch('/data/protocols.json');
+      if (!response.ok) throw new Error('Failed to load protocols.json (HTTP ' + response.status + ')');
+      const data = await response.json();
+      allProtocols = data.protocols || [];
+      document.getElementById('protocols-loading').classList.add('hidden');
+      buildCategoryFilters(allProtocols);
+      renderProtocolCards(allProtocols);
+    } catch (error) {
+      console.error('[FirstAid] Failed to load protocols:', error);
+      document.getElementById('protocols-loading').classList.add('hidden');
+      document.getElementById('protocols-error').classList.remove('hidden');
+      document.getElementById('protocols-error-msg').textContent = error.message;
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  // AI SYMPTOM ANALYSIS
+  // ──────────────────────────────────────────────
+  document.getElementById('ai-symptom-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const symptom = document.getElementById('ai-symptom-input').value.trim();
+    if (!symptom) { showToast('Please enter a symptom or condition to analyze.', 'error'); return; }
+
+    // Check if it already exists locally
+    const existingLocal = allProtocols.find(p =>
+      p.title.toLowerCase().includes(symptom.toLowerCase()) ||
+      (p.id || '').includes(symptom.toLowerCase().replace(/\s+/g,'_'))
+    );
+    if (existingLocal) {
+      showDetail(existingLocal);
+      showToast('📋 Found existing protocol for this symptom.', 'info');
+      return;
+    }
+
+    const btn = document.getElementById('ai-analyze-btn');
+    btn.disabled = true; btn.textContent = '🔄 Analyzing…';
+    document.getElementById('ai-symptom-loading').style.display = 'block';
+    document.getElementById('ai-result-preview').style.display = 'none';
+
+    try {
+      let protocol;
+
+      if (navigator.onLine) {
+        const result = await apiFirstAidAnalyze(symptom);
+        protocol = result.protocol;
+        if (result.cached) {
+          showToast('📋 Protocol found in database.', 'info');
+        }
+      } else {
+        // Offline fallback: basic protocol
+        protocol = {
+          id: symptom.toLowerCase().replace(/\s+/g,'_').substring(0,30),
+          title: symptom.charAt(0).toUpperCase() + symptom.slice(1),
+          category: 'Common Ailment',
+          icon: '🏥',
+          urgency: 'moderate',
+          steps: [
+            'Keep the patient calm and comfortable.',
+            'Monitor vital signs (temperature, pulse, breathing).',
+            'Ensure the patient is well hydrated.',
+            'Isolate the patient if symptoms may be infectious.',
+            'If symptoms worsen or do not improve in 24 hours, seek medical attention immediately.',
+          ],
+          otc_medications: [],
+          red_flags: ['High fever (>40°C)', 'Difficulty breathing', 'Loss of consciousness', 'Severe pain'],
+          refer_if: 'Symptoms persist beyond 48 hours or any red flag sign is present.',
+          _ai_generated: false,
+          _offline: true
+        };
+        showToast('⚠️ Offline — basic protocol generated.', 'warning');
+      }
+
+      if (!protocol) throw new Error('No protocol data returned.');
+
+      pendingAiProtocol = protocol;
+
+      document.getElementById('ai-result-title').textContent = protocol.title || symptom;
+      document.getElementById('ai-result-meta').textContent  =
+        `Category: ${protocol.category} | Urgency: ${protocol.urgency} | ${(protocol.steps || []).length} steps`;
+
+      document.getElementById('ai-symptom-loading').style.display = 'none';
+      document.getElementById('ai-result-preview').style.display  = 'block';
+
+    } catch (error) {
+      document.getElementById('ai-symptom-loading').style.display = 'none';
+      showToast('AI analysis failed: ' + (error.message || 'Please try again.'), 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = '🤖 Analyze with AI';
+    }
+  });
+
+  async function saveAndShowProtocol() {
+    if (!pendingAiProtocol) return;
+
+    // Add to local list
+    const existsIdx = allProtocols.findIndex(p => p.id === pendingAiProtocol.id);
+    if (existsIdx >= 0) {
+      allProtocols[existsIdx] = pendingAiProtocol;
+    } else {
+      allProtocols.push(pendingAiProtocol);
+    }
+
+    // Save to backend (updates protocols.json for offline use)
+    if (navigator.onLine) {
+      try {
+        await apiFirstAidSave(pendingAiProtocol);
+        showToast('✅ Protocol saved to offline database.', 'success');
+      } catch (err) {
+        showToast('⚠️ Protocol added locally but could not save to server.', 'warning');
+      }
+    }
+
+    // Refresh UI
+    buildCategoryFilters(allProtocols);
+    renderProtocolCards(allProtocols);
+
+    // Show the new protocol detail
+    showDetail(pendingAiProtocol);
+    discardAiResult();
+    document.getElementById('ai-symptom-input').value = '';
+  }
+
+  function discardAiResult() {
+    pendingAiProtocol = null;
+    document.getElementById('ai-result-preview').style.display = 'none';
+  }
+
+  // ──────────────────────────────────────────────
+  // CATEGORY FILTERS
+  // ──────────────────────────────────────────────
+  function buildCategoryFilters(protocols) {
+    const categories = ['All', ...new Set(protocols.map(p => p.category))];
+    const container  = document.getElementById('category-filters');
+    container.innerHTML = '';
+
+    categories.forEach(function (cat) {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-secondary btn-sm' + (cat === activeCategory ? ' btn-active-filter' : '');
+      btn.textContent = cat;
+      btn.style.border = cat === activeCategory ? '1px solid var(--blue-light)' : '1px solid var(--border)';
+      btn.onclick = function () {
+        activeCategory = cat;
+        container.querySelectorAll('button').forEach(b => b.style.border = '1px solid var(--border)');
+        btn.style.border = '1px solid var(--blue-light)';
+        filterProtocols(document.getElementById('protocol-search').value);
+      };
+      container.appendChild(btn);
+    });
+  }
+
+  // ──────────────────────────────────────────────
+  // RENDER PROTOCOL CARDS
+  // ──────────────────────────────────────────────
+  function renderProtocolCards(protocols) {
+    const grid  = document.getElementById('protocols-grid');
+    const noRes = document.getElementById('no-results');
+    grid.innerHTML = '';
+
+    if (protocols.length === 0) { noRes.classList.remove('hidden'); return; }
+    noRes.classList.add('hidden');
+
+    protocols.forEach(function (protocol) {
+      const badgeClass = {
+        'critical': 'badge-critical', 'high': 'badge-critical',
+        'moderate': 'badge-ai-draft', 'low': 'badge-info'
+      }[protocol.urgency] || 'badge-muted';
+
+      const isNew = protocol._ai_generated;
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.cursor = 'pointer';
+      card.innerHTML = `
+        <div class="card-header" style="padding-bottom:var(--space-sm); margin-bottom:var(--space-sm);">
+          <span class="card-title">
+            <span style="font-size:1.3rem;">${protocol.icon || '📋'}</span>
+            ${protocol.title}
+            ${isNew ? '<span class="protocol-new-badge" style="margin-left:6px;">AI</span>' : ''}
+          </span>
+          <span class="badge ${badgeClass}" style="text-transform:capitalize;">${protocol.urgency || 'N/A'}</span>
+        </div>
+        <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:var(--space-sm);">${protocol.category}</div>
+        <div style="font-size:0.88rem; color:var(--text-secondary);">
+          ${(protocol.steps || []).length} steps ·
+          ${(protocol.otc_medications || []).length} medication(s) ·
+          ${(protocol.red_flags || []).length} red flag(s)
+        </div>
+        <div style="margin-top:var(--space-md);">
+          <button class="btn btn-ghost btn-sm" style="padding-left:0;">View Full Protocol →</button>
+        </div>
+      `;
+      card.addEventListener('click', () => showDetail(protocol));
+      grid.appendChild(card);
+    });
+  }
+
+  // ──────────────────────────────────────────────
+  // FILTER PROTOCOLS
+  // ──────────────────────────────────────────────
+  function filterProtocols(searchTerm) {
+    const term = (searchTerm || '').toLowerCase().trim();
+    const filtered = allProtocols.filter(function (p) {
+      const catMatch  = activeCategory === 'All' || p.category === activeCategory;
+      const textMatch = !term ||
+        p.title.toLowerCase().includes(term) ||
+        p.category.toLowerCase().includes(term) ||
+        (p.steps || []).some(s => s.toLowerCase().includes(term)) ||
+        (p.red_flags || []).some(f => f.toLowerCase().includes(term));
+      return catMatch && textMatch;
+    });
+    renderProtocolCards(filtered);
+  }
+
+  // ──────────────────────────────────────────────
+  // SHOW DETAIL PANEL
+  // ──────────────────────────────────────────────
+  function showDetail(protocol) {
+    document.getElementById('detail-title').textContent = (protocol.icon || '') + ' ' + protocol.title;
+
+    const badgeClass = {
+      'critical': 'badge-critical', 'high': 'badge-critical',
+      'moderate': 'badge-ai-draft', 'low': 'badge-info'
+    }[protocol.urgency] || 'badge-muted';
+
+    const urgencyBadge = document.getElementById('detail-urgency-badge');
+    urgencyBadge.className = 'badge ' + badgeClass;
+    urgencyBadge.textContent = protocol.urgency
+      ? protocol.urgency.charAt(0).toUpperCase() + protocol.urgency.slice(1)
+      : 'Unknown';
+
+    // Steps
+    const stepsList = document.getElementById('detail-steps');
+    stepsList.innerHTML = '';
+    (protocol.steps || []).forEach(function (step) {
+      const li = document.createElement('li');
+      li.innerHTML = step.startsWith('  →')
+        ? `<span style="color:var(--text-muted);">${step.trim()}</span>`
+        : step;
+      stepsList.appendChild(li);
+    });
+
+    // Medications
+    const medsContainer = document.getElementById('detail-meds-content');
+    medsContainer.innerHTML = '';
+    if (!protocol.otc_medications || protocol.otc_medications.length === 0) {
+      medsContainer.innerHTML = `<div class="alert alert-info"><span class="alert-icon">ℹ️</span>No OTC medications for this protocol. Refer to a doctor for treatment.</div>`;
+    } else {
+      protocol.otc_medications.forEach(function (med) {
+        const medCard = document.createElement('div');
+        medCard.className = 'card';
+        medCard.style.marginBottom = 'var(--space-md)';
+        medCard.innerHTML = `
+          <h4 style="margin-bottom:var(--space-md); color:var(--text-primary);">💊 ${med.name}</h4>
+          <div class="form-row">
+            <div><div class="form-label">Adult Dose</div><div style="font-size:0.9rem; color:var(--text-secondary);">${med.adult_dose}</div></div>
+            <div><div class="form-label">Child Dose</div><div style="font-size:0.9rem; color:var(--text-secondary);">${med.child_dose}</div></div>
+          </div>
+          <div class="alert alert-warning" style="margin-top:var(--space-md); margin-bottom:0;">
+            <span class="alert-icon">⚠️</span><div><strong>Warning:</strong> ${med.warning}</div>
+          </div>
+        `;
+        medsContainer.appendChild(medCard);
+      });
+    }
+
+    // Red Flags
+    const flagsList = document.getElementById('detail-red-flags');
+    flagsList.innerHTML = '';
+    (protocol.red_flags || []).forEach(function (flag) {
+      const li = document.createElement('li'); li.textContent = flag; flagsList.appendChild(li);
+    });
+    document.getElementById('detail-refer-if').textContent = protocol.refer_if || 'Consult a doctor if condition does not improve.';
+
+    // Reset to first tab
+    document.querySelector('#detail-panel .tab-btn').click();
+
+    const panel = document.getElementById('detail-panel');
+    panel.classList.remove('hidden');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function closeDetail() {
+    document.getElementById('detail-panel').classList.add('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  </script>
+</body>
+</html>
