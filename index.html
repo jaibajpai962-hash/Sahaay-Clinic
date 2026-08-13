@@ -377,7 +377,8 @@ document.getElementById('login-form').addEventListener('submit', async function 
         deviceId: getDeviceId(),
         email:    result.email || '',
         phone:    result.phone || '',
-        district: result.district || ''
+        district: result.district || '',
+        doctorProfile: result.doctor_profile || null
       };
       await saveSession(sessionData);
       showDashboard(sessionData);
