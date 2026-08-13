@@ -160,6 +160,22 @@
     </div>
   </div>
 
+  <!-- Doctor patient query -->
+  <div class="card" style="margin-bottom:var(--space-lg);">
+    <div class="card-header">
+      <span class="card-title">🔎 Patient Query</span>
+      <span class="text-muted" style="font-size:0.82rem;">Search by Patient/User ID, name or phone</span>
+    </div>
+    <div class="card-body">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input id="doctor-patient-query" class="form-control" style="flex:1;min-width:220px;" placeholder="e.g. SAH-... or patient name" />
+        <button class="btn btn-primary" onclick="searchDoctorPatient()">Search</button>
+      </div>
+      <div id="doctor-patient-results" style="margin-top:12px;"></div>
+      <div id="doctor-patient-detail" class="hidden" style="margin-top:14px;"></div>
+    </div>
+  </div>
+
   <!-- Stats row -->
   <div class="grid-3" style="margin-bottom:var(--space-lg);">
     <div class="stat-card amber">
@@ -251,6 +267,18 @@
             <!-- Vitals -->
             <h4 style="margin-bottom:var(--space-md); color:var(--text-muted);">Recorded Vitals</h4>
             <div id="case-vitals-grid" class="vitals-grid" style="margin-bottom:var(--space-lg);"></div>
+
+            <!-- Patient Media / Attachments -->
+            <div id="case-media-section" class="card" style="margin-bottom:var(--space-lg); background:var(--bg-elevated);">
+              <div class="card-header">
+                <span class="card-title">📎 Patient Media &amp; Records</span>
+                <span id="case-media-count" class="badge badge-info">0 files</span>
+              </div>
+              <div class="card-body">
+                <p id="case-media-empty" class="text-muted" style="margin:0;">No image, audio, or video attached to this patient record.</p>
+                <div id="case-media-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;"></div>
+              </div>
+            </div>
 
             <!-- AI Draft -->
             <h4 style="margin-bottom:var(--space-md);">AI Draft Assessment <span class="badge badge-ai-draft" style="margin-left:8px;">⚠️ Unverified</span></h4>
@@ -698,6 +726,17 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   currentDoctorProfile = await loadStoredDoctorProfile();
 
+  // Server-linked doctor profile wins over stale local data after login.
+  if (navigator.onLine) {
+    try {
+      const remote = await apiGetCurrentDoctor();
+      if (remote.success && remote.exists && remote.doctor) {
+        await persistDoctorProfile(remote.doctor);
+        currentDoctorProfile = remote.doctor;
+      }
+    } catch (e) { console.warn('Doctor auto-detect failed:', e); }
+  }
+
   if (!isDoctorVerified()) {
     showFirstTimeOverlay();
   } else {
@@ -707,6 +746,62 @@ document.addEventListener('DOMContentLoaded', async function () {
     await loadRecentSessions();
   }
 });
+
+// ──────────────────────────────────────────────────
+// DOCTOR PATIENT QUERY
+// ──────────────────────────────────────────────────
+async function searchDoctorPatient() {
+  const q = document.getElementById('doctor-patient-query').value.trim();
+  const results = document.getElementById('doctor-patient-results');
+  if (q.length < 2) { showToast('Enter at least 2 characters.', 'warning'); return; }
+  results.innerHTML = '<span class="text-muted">Searching…</span>';
+  try {
+    const data = await apiSearchDoctorPatients(q);
+    if (!data.patients?.length) { results.innerHTML = '<span class="text-muted">No patient found.</span>'; return; }
+    results.innerHTML = data.patients.map(p => `
+      <button class="btn btn-secondary btn-sm" style="margin:4px;" onclick="loadDoctorPatient('${String(p.patient_id).replace(/'/g,"\\\\'")}')">
+        ${escapeHtml(p.name)} · ${escapeHtml(p.patient_id)}
+      </button>`).join('');
+  } catch (e) {
+    results.innerHTML = `<span class="text-muted">${escapeHtml(e.message || 'Search failed.')}</span>`;
+  }
+}
+
+async function loadDoctorPatient(patientId) {
+  const detail = document.getElementById('doctor-patient-detail');
+  detail.classList.remove('hidden');
+  detail.innerHTML = '<div class="text-muted">Loading patient record…</div>';
+  try {
+    const data = await apiGetDoctorPatient(patientId);
+    const p = data.patient || {};
+    const history = data.guidanceHistory || [];
+    // Copy server history to device so the same patient guidance is available offline later.
+    for (const h of history) {
+      try { await saveGuidanceLocally(patientId, { patientId, ...h.guidance_json, source:h.source }, h.verification_status === 'verified'); } catch (_) {}
+    }
+    detail.innerHTML = `
+      <div class="alert alert-info">
+        <strong>${escapeHtml(p.name || 'Patient')}</strong> · ${escapeHtml(p.patientId || patientId)}
+        · ${escapeHtml(String(p.age || ''))} yrs · ${escapeHtml(p.gender || '')}<br>
+        <span>Complaint: ${escapeHtml(p.chiefComplaint || '—')}</span><br>
+        <span>Status: ${escapeHtml(p.status || '—')}</span>
+      </div>
+      <h4>Clinical Guidance History</h4>
+      ${history.length ? history.map(h => {
+        const g=h.guidance_json || {};
+        return `<div class="card" style="margin-top:8px;padding:10px;">
+          <div><strong>${escapeHtml(g.condition || 'Assessment')}</strong> · ${escapeHtml(g.urgency || '')}
+          <span class="badge ${h.verification_status==='verified'?'badge-verified':'badge-ai-draft'}">${h.verification_status==='verified'?'✅ Doctor Verified':'⚠️ AI Draft'}</span></div>
+          <div class="text-muted" style="margin-top:4px;">${escapeHtml(g.reasoning || '')}</div>
+          <ul>${(g.recommendations||[]).slice(0,5).map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>
+          ${(g.medicine_suggestions||[]).length ? `<div><strong>Medicine/supportive guidance:</strong> ${escapeHtml((g.medicine_suggestions||[]).join('; '))}</div>`:''}
+        </div>`;
+      }).join('') : '<p class="text-muted">No guidance history yet.</p>'}
+    `;
+  } catch (e) {
+    detail.innerHTML = `<div class="alert alert-danger">${escapeHtml(e.message || 'Unable to load patient.')}</div>`;
+  }
+}
 
 // ──────────────────────────────────────────────────
 // LOAD PENDING CASES
@@ -799,8 +894,25 @@ async function loadPendingCases() {
 // ──────────────────────────────────────────────────
 // OPEN CASE FOR REVIEW
 // ──────────────────────────────────────────────────
-function openCaseForReview(caseData) {
+async function openCaseForReview(caseData) {
   activeCaseId = caseData.assessmentId || caseData.patientId || caseData.id;
+
+  // Always refresh the patient from MySQL before opening the preview so the
+  // doctor sees the latest vitals actually stored by the backend.
+  if (caseData.patientId && navigator.onLine) {
+    try {
+      const fresh = await apiGetDoctorPatient(caseData.patientId);
+      if (fresh && fresh.patient) {
+        caseData = { ...caseData, ...fresh.patient };
+        if (fresh.assessments && fresh.assessments.length) {
+          const match = fresh.assessments.find(a => a.assessmentId === activeCaseId);
+          if (match) caseData = { ...caseData, vitals: match.vitals || caseData.vitals };
+        }
+      }
+    } catch (e) {
+      console.warn('Fresh patient preview unavailable; using pending-case snapshot.', e);
+    }
+  }
 
   document.getElementById('case-patient-id').textContent   = caseData.patientId || '';
   document.getElementById('case-name').textContent         = caseData.name || '—';
@@ -808,21 +920,59 @@ function openCaseForReview(caseData) {
   document.getElementById('case-complaint').textContent    = caseData.chiefComplaint || '—';
 
   // Vitals
-  const vitals = caseData.patientVitals || caseData.vitals || {};
+  const vitals = caseData.patientVitals || caseData.vitals || caseData.vitalsSnapshot || {};
   const vgrid  = document.getElementById('case-vitals-grid');
   vgrid.innerHTML = '';
   const vitalFields = [
-    ['temperature','🌡️ Temp','°C'], ['bpSystolic','💉 BP Sys','mmHg'],
-    ['bpDiastolic','BP Dia','mmHg'],['spo2','🫁 SpO₂','%'],
-    ['pulseRate','❤️ Pulse','bpm'], ['weight','⚖️ Weight','kg']
+    ['temperature','🌡️ Temperature','°C'],
+    ['bpSystolic','💉 Blood Pressure (Sys)','mmHg'],
+    ['bpDiastolic','Blood Pressure (Dia)','mmHg'],
+    ['spo2','🫁 SpO₂','%'],
+    ['pulseRate','❤️ Pulse Rate','bpm'],
+    ['weight','⚖️ Weight','kg'],
+    ['respiratoryRate','🫁 Respiratory Rate','breaths/min']
   ];
   vitalFields.forEach(([key, label, unit]) => {
-    const val = vitals[key] || '—';
+    const val = vitals[key] ?? '—';
     vgrid.innerHTML += `<div class="vital-box" style="text-align:center;">
       <div class="vital-label">${label}</div>
-      <div class="vital-value" style="font-size:1.1rem; margin-top:4px;">${val}</div>
+      <div class="vital-value" style="font-size:1.1rem; margin-top:4px;">${escapeHtml(String(val))}</div>
       <div class="vital-unit">${val !== '—' ? unit : ''}</div>
     </div>`;
+  });
+  const recorded = vitals.recordedAt ? formatDate(vitals.recordedAt) : 'Recorded with patient vitals';
+  vgrid.insertAdjacentHTML('afterend', `<div class="text-muted" style="margin:-8px 0 var(--space-lg);font-size:0.82rem;">🕒 ${escapeHtml(recorded)} · Source: MySQL patient record</div>`);
+  if (vitals.notes) {
+    vgrid.insertAdjacentHTML('afterend', `<div class="card" style="margin:-4px 0 var(--space-lg);padding:12px;background:var(--bg-elevated);"><strong>Vitals Notes:</strong> ${escapeHtml(String(vitals.notes))}</div>`);
+  }
+
+  // Patient media / records
+  const media = Array.isArray(caseData.attachments) ? caseData.attachments : (Array.isArray(caseData.media) ? caseData.media : []);
+  const mediaGrid = document.getElementById('case-media-grid');
+  const mediaEmpty = document.getElementById('case-media-empty');
+  const mediaCount = document.getElementById('case-media-count');
+  mediaGrid.innerHTML = '';
+  mediaCount.textContent = `${media.length} file${media.length === 1 ? '' : 's'}`;
+  mediaEmpty.style.display = media.length ? 'none' : 'block';
+  media.forEach((item, index) => {
+    const rawUrl = typeof item === 'string' ? item : (item.url || item.path || item.src || '');
+    if (!rawUrl) return;
+    const url = rawUrl.startsWith('http') ? rawUrl : `${window.location.origin}${rawUrl.startsWith('/') ? rawUrl : '/' + rawUrl}`;
+    const name = escapeHtml(typeof item === 'string' ? (rawUrl.split('/').pop() || `Attachment ${index + 1}`) : (item.name || `Attachment ${index + 1}`));
+    const type = (typeof item === 'object' && item.type) ? item.type : '';
+    const lower = `${type} ${rawUrl}`.toLowerCase();
+    const card = document.createElement('div');
+    card.style.cssText = 'border:1px solid var(--border);border-radius:10px;padding:10px;background:var(--bg-surface);overflow:hidden;';
+    if (lower.includes('image/')) {
+      card.innerHTML = `<a href="${url}" target="_blank" rel="noopener"><img src="${url}" alt="${name}" loading="lazy" style="width:100%;height:180px;object-fit:contain;background:#000;border-radius:6px;"></a><div style="margin-top:8px;font-size:.82rem;color:var(--text-muted);word-break:break-all;">🖼️ ${name}</div>`;
+    } else if (lower.includes('video/')) {
+      card.innerHTML = `<video controls preload="metadata" style="width:100%;height:180px;background:#000;border-radius:6px;"><source src="${url}" type="${type || 'video/mp4'}"></video><div style="margin-top:8px;font-size:.82rem;color:var(--text-muted);word-break:break-all;">🎥 ${name}</div>`;
+    } else if (lower.includes('audio/')) {
+      card.innerHTML = `<audio controls preload="metadata" style="width:100%;margin-top:70px;"><source src="${url}" type="${type || 'audio/mpeg'}"></audio><div style="margin-top:12px;font-size:.82rem;color:var(--text-muted);word-break:break-all;">🎙️ ${name}</div>`;
+    } else {
+      card.innerHTML = `<a class="btn btn-secondary btn-sm" href="${url}" target="_blank" rel="noopener">📎 Open attachment</a><div style="margin-top:8px;font-size:.82rem;color:var(--text-muted);word-break:break-all;">${name}</div>`;
+    }
+    mediaGrid.appendChild(card);
   });
 
   // AI assessment
@@ -893,6 +1043,16 @@ document.getElementById('verify-form').addEventListener('submit', async function
       document.getElementById('verify-status-badge').className = 'badge badge-verified';
       document.getElementById('verify-status-badge').textContent = '✅ Doctor Verified';
       showToast('✅ Case verified successfully!', 'success');
+      // Save the newly verified guidance history to this device for offline reuse.
+      try {
+        const pid = document.getElementById('case-patient-id')?.textContent || '';
+        if (pid && navigator.onLine) {
+          const remote = await apiGetDoctorPatient(pid);
+          for (const h of (remote.guidanceHistory || [])) {
+            await saveGuidanceLocally(pid, { patientId: pid, ...h.guidance_json, source: h.source }, h.verification_status === 'verified');
+          }
+        }
+      } catch (_) {}
       // Refresh pending list
       await loadPendingCases();
     } else {
