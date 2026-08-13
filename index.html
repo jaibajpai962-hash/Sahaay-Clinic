@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sahaay Clinic — AI-Powered Virtual Rural Clinic" />
+  <title>Sahaay Clinic — Login &amp; Dashboard</title>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#238636" />
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <!-- Google Translate Widget -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        { pageLanguage: 'en', includedLanguages: 'hi,ta,bn,te,mr,gu,kn,ml,pa,ur,or,as,en',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false },
+        'google_translate_element_login'
+      );
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+
+<body>
+
+<!-- ====================================================
+     LOGIN VIEW
+===================================================== -->
+<div id="login-view" class="login-wrapper">
+  <div class="login-card">
+
+    <div class="login-logo">
+      <div class="logo-circle">🏥</div>
+      <h1>Sahaay Clinic</h1>
+      <p class="text-muted">AI-Powered Virtual Rural Clinic</p>
+      <span class="lang-selector-mount" style="display:inline-flex; margin-top:10px;"></span>
+    </div>
+
+    <!-- Offline alert -->
+    <div id="login-offline-alert" class="alert alert-warning hidden">
+      <span class="alert-icon">📡</span>
+      <div><strong>Offline Mode</strong><br><small>No internet. App works offline using cached data.</small></div>
+    </div>
+
+    <!-- ── AUTH PANELS ── -->
+
+    <!-- LOGIN PANEL -->
+    <div id="panel-login" class="auth-panel active">
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="worker-id">Health Worker ID <span class="required">*</span></label>
+          <input type="text" id="worker-id" class="form-control" placeholder="e.g. HW-MH-0042" autocomplete="username" required />
+          <span class="form-error">Please enter your Worker ID.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="worker-password">Password <span class="required">*</span></label>
+          <input type="password" id="worker-password" class="form-control" placeholder="Enter your password" autocomplete="current-password" required />
+          <span class="form-error">Please enter your password.</span>
+        </div>
+        <div id="login-error" class="alert alert-danger hidden">
+          <span class="alert-icon">❌</span><span id="login-error-msg">Invalid credentials.</span>
+        </div>
+        <button type="submit" id="login-btn" class="btn btn-primary btn-full">Log In</button>
+      </form>
+
+      <div class="auth-toggle">
+        <button onclick="showAuthPanel('panel-signup')">Create new account</button>
+        &nbsp;|&nbsp;
+        <button onclick="showAuthPanel('panel-forgot')">Forgot password?</button>
+      </div>
+
+      <div class="demo-hint" style="margin-top:var(--space-md);">
+        🧪 <strong>Demo:</strong> ID <code>HW-DEMO-001</code> &nbsp;|&nbsp; PIN <code>1234</code>
+      </div>
+    </div>
+
+    <!-- SIGNUP PANEL -->
+    <div id="panel-signup" class="auth-panel">
+      <h3 style="margin-bottom:var(--space-md);">Create Health Worker Account</h3>
+      <form id="signup-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="su-worker-id">Health Worker ID <span class="required">*</span></label>
+          <input type="text" id="su-worker-id" class="form-control" placeholder="e.g. HW-UP-0042" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="su-name">Full Name <span class="required">*</span></label>
+          <input type="text" id="su-name" class="form-control" placeholder="Your full name" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="su-email">Email Address <span class="required">*</span></label>
+          <input type="email" id="su-email" class="form-control" placeholder="your@email.com" autocomplete="email" required />
+          <span class="form-hint">Used for password recovery.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="su-password">Password <span class="required">*</span></label>
+          <input type="password" id="su-password" class="form-control" placeholder="Minimum 6 characters" autocomplete="new-password" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="su-phone">Phone (optional)</label>
+          <input type="tel" id="su-phone" class="form-control" placeholder="10-digit number" maxlength="10" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="su-district">District (optional)</label>
+          <input type="text" id="su-district" class="form-control" placeholder="e.g. Pune" />
+        </div>
+        <div id="signup-error" class="alert alert-danger hidden">
+          <span class="alert-icon">❌</span><span id="signup-error-msg"></span>
+        </div>
+        <div id="signup-success" class="alert alert-success hidden">
+          <span class="alert-icon">✅</span> Account created! Please log in.
+        </div>
+        <button type="submit" id="signup-btn" class="btn btn-primary btn-full">Create Account</button>
+      </form>
+      <div class="auth-toggle">
+        <button onclick="showAuthPanel('panel-login')">← Back to Login</button>
+      </div>
+    </div>
+
+    <!-- FORGOT PASSWORD PANEL -->
+    <div id="panel-forgot" class="auth-panel">
+      <h3 style="margin-bottom:var(--space-md);">Reset Password</h3>
+      <p class="text-muted" style="font-size:0.88rem; margin-bottom:var(--space-md);">
+        Enter your registered email. We will send a reset link.
+      </p>
+      <form id="forgot-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="forgot-email">Email Address <span class="required">*</span></label>
+          <input type="email" id="forgot-email" class="form-control" placeholder="your@email.com" required />
+        </div>
+        <div id="forgot-msg" class="alert hidden"></div>
+        <button type="submit" id="forgot-btn" class="btn btn-primary btn-full">Send Reset Link</button>
+      </form>
+      <div class="auth-toggle">
+        <button onclick="showAuthPanel('panel-login')">← Back to Login</button>
+      </div>
+    </div>
+
+  </div><!-- .login-card -->
+</div><!-- #login-view -->
+
+<!-- ====================================================
+     DASHBOARD VIEW
+===================================================== -->
+<div id="dashboard-view" class="hidden">
+
+  <!-- Navbar -->
+  <nav class="navbar" id="main-navbar">
+    <a href="/index.html" class="navbar-brand">
+      <div class="logo-icon">🏥</div>
+      Sahaay Clinic
+    </a>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu" onclick="toggleMobileNav()">☰</button>
+    <ul class="navbar-nav" id="navbar-nav">
+      <li><a href="/index.html" class="active">Dashboard</a></li>
+      <li><a href="/intake.html">New Patient</a></li>
+      <li><a href="/firstaid.html">First Aid</a></li>
+      <li><a href="/doctor.html">Doctor Portal</a></li>
+    </ul>
+    <div class="navbar-actions">
+      <span class="lang-selector-mount" style="margin-right:4px;"></span>
+      <span id="network-status" class="status-indicator status-online">
+        <span class="status-dot"></span> Online
+      </span>
+      <!-- Profile button (left of network status) -->
+      <a href="/profile.html" class="profile-btn" id="profile-nav-btn" title="My Profile">
+        <span class="profile-avatar">👤</span>
+        <span class="profile-name" id="worker-name-display"></span>
+      </a>
+      <button onclick="handleLogout()" class="btn btn-secondary btn-sm">Logout</button>
+    </div>
+  </nav>
+
+  <div class="page-container">
+    <div class="page-header flex justify-between items-center">
+      <div>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle" id="today-date">Loading date…</p>
+      </div>
+      <a href="/intake.html" class="btn btn-primary">＋ New Patient</a>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="grid-3 mb-lg">
+      <div class="stat-card blue">
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-label">Total Patients Today</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-value" id="stat-waiting">—</div>
+        <div class="stat-label">Awaiting Triage</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-value" id="stat-completed">—</div>
+        <div class="stat-label">Completed Today</div>
+      </div>
+    </div>
+
+    <!-- AWAITING TRIAGE SECTION -->
+    <div id="awaiting-triage-section">
+      <div class="dashboard-section-title">⏳ Awaiting Triage</div>
+      <div class="card" style="margin-bottom:var(--space-lg);">
+        <div class="card-header">
+          <span class="card-title">🔴 Patients Needing Assessment</span>
+          <button onclick="loadQueue()" class="btn btn-secondary btn-sm">↻ Refresh</button>
+        </div>
+        <div class="card-body">
+          <div id="awaiting-loading" class="text-center text-muted" style="padding:24px;">Loading…</div>
+          <div id="awaiting-table-wrapper" class="hidden">
+            <div class="table-scroll-wrapper">
+              <table class="queue-table">
+                <thead>
+                  <tr><th>#</th><th>Patient Name</th><th>Age/Gender</th><th>Chief Complaint</th><th>Status</th><th>Time</th><th>Action</th></tr>
+                </thead>
+                <tbody id="awaiting-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="awaiting-empty" class="text-center text-muted hidden" style="padding:30px;">
+            <div style="font-size:2rem; margin-bottom:8px;">✅</div>
+            No patients awaiting triage.<br><small>Click "New Patient" to register.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPLETED SECTION -->
+    <div id="completed-section">
+      <div class="dashboard-section-title">✅ Completed</div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">✅ Doctor-Verified Cases</span>
+          <span class="badge badge-info" id="stat-verified-today" style="font-size:0.78rem;">— verified today</span>
+        </div>
+        <div class="card-body">
+          <div id="completed-loading" class="text-center text-muted" style="padding:24px;">Loading…</div>
+          <div id="completed-table-wrapper" class="hidden">
+            <div class="table-scroll-wrapper">
+              <table class="queue-table">
+                <thead>
+                  <tr><th>#</th><th>Patient Name</th><th>Age/Gender</th><th>Chief Complaint</th><th>Status</th><th>Time</th><th>Action</th></tr>
+                </thead>
+                <tbody id="completed-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="completed-empty" class="text-center text-muted hidden" style="padding:30px;">
+            <div style="font-size:2rem; margin-bottom:8px;">📭</div>
+            No completed cases yet today.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .page-container -->
+</div><!-- #dashboard-view -->
+
+<!-- Floating offline badge -->
+<div id="offline-queue-badge" class="offline-queue-badge" onclick="syncOfflineQueue()">
+  📤 0 records pending sync
+</div>
+
+<script src="/js/app.js"></script>
+<script src="/js/api.js"></script>
+
+<script>
+// ──────────────────────────────────────────────
+// AUTH PANEL TOGGLE
+// ──────────────────────────────────────────────
+function showAuthPanel(id) {
+  document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+// ──────────────────────────────────────────────
+// MOBILE NAV
+// ──────────────────────────────────────────────
+function toggleMobileNav() {
+  const nav = document.getElementById('navbar-nav');
+  const btn = document.getElementById('nav-hamburger');
+  if (!nav) return;
+  const isOpen = nav.classList.toggle('open');
+  btn.textContent = isOpen ? '✕' : '☰';
+}
+document.addEventListener('click', function (e) {
+  const nav = document.getElementById('navbar-nav');
+  const btn = document.getElementById('nav-hamburger');
+  if (!nav) return;
+  if (!nav.contains(e.target) && e.target !== btn) {
+    nav.classList.remove('open');
+    if (btn) btn.textContent = '☰';
+  }
+});
+
+// Stable browser/device identifier. It stays on this browser profile and is never sent as a secret.
+function getDeviceId() {
+  const key = 'sahaay_device_id';
+  let id = localStorage.getItem(key);
+  if (!id) {
+    id = (crypto.randomUUID ? crypto.randomUUID() : 'dev-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+    localStorage.setItem(key, id);
+  }
+  return id;
+}
+
+// ──────────────────────────────────────────────
+// PAGE INIT
+// ──────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async function () {
+  await initApp();
+
+  if (!navigator.onLine) {
+    document.getElementById('login-offline-alert').classList.remove('hidden');
+  }
+
+  // ── PERSISTENT SESSION: auto-login if a valid session exists ──
+  const session = await getSession();
+  if (session && session.workerId) {
+    // Token may be empty (offline mode) — still restore the session
+    showDashboard(session);
+    // Still set the date (dashboard is now visible)
+    const todayEl = document.getElementById('today-date');
+    if (todayEl) todayEl.textContent =
+      new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    return; // skip showing login form
+  }
+
+  document.getElementById('today-date').textContent =
+    new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+});
+
+// ──────────────────────────────────────────────
+// LOGIN FORM
+// ──────────────────────────────────────────────
+document.getElementById('login-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const workerIdEl  = document.getElementById('worker-id');
+  const passwordEl  = document.getElementById('worker-password');
+  const loginBtn    = document.getElementById('login-btn');
+  const errorDiv    = document.getElementById('login-error');
+  const errorMsg    = document.getElementById('login-error-msg');
+
+  const workerId = workerIdEl.value.trim();
+  const password = passwordEl.value;
+
+  let valid = true;
+  if (!workerId) { workerIdEl.classList.add('is-invalid'); valid = false; } else { workerIdEl.classList.remove('is-invalid'); }
+  if (!password) { passwordEl.classList.add('is-invalid'); valid = false; } else { passwordEl.classList.remove('is-invalid'); }
+  if (!valid) return;
+
+  loginBtn.disabled = true;
+  loginBtn.classList.add('loading');
+  loginBtn.textContent = 'Logging in…';
+  errorDiv.classList.add('hidden');
+
+  try {
+    // Allow demo login when offline or for testing
+    if (workerId === 'HW-DEMO-001' && password === '1234') {
+      const demoSession = { workerId, name: 'Demo Worker', role: 'health_worker', token: 'demo', refreshToken: '', email: '', deviceId: getDeviceId() };
+      await saveSession(demoSession);
+      showDashboard(demoSession);
+      return;
+    }
+
+    const result = await apiLogin(workerId, password);
+
+    if (result.success) {
+      const sessionData = {
+        workerId: result.worker_id || workerId,
+        name:     result.name || workerId,
+        role:     result.role || 'health_worker',
+        token:    result.token || '',
+        refreshToken: result.refresh_token || '',
+        accessTokenExpiresAt: Date.now() + (Number(result.expires_in || 86400) * 1000),
+        deviceId: getDeviceId(),
+        email:    result.email || '',
+        phone:    result.phone || '',
+        district: result.district || ''
+      };
+      await saveSession(sessionData);
+      showDashboard(sessionData);
+    } else {
+      throw new Error(result.message || 'Invalid credentials.');
+    }
+  } catch (error) {
+    if (error.offline) {
+      const offlineSession = { workerId, name: workerId, role: 'health_worker', token: '', refreshToken: '', deviceId: getDeviceId() };
+      await saveSession(offlineSession);
+      showToast('⚠️ Offline mode — limited functionality.', 'warning');
+      showDashboard(offlineSession);
+    } else {
+      errorMsg.textContent = error.message || 'Login failed. Please try again.';
+      errorDiv.classList.remove('hidden');
+    }
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.classList.remove('loading');
+    loginBtn.textContent = 'Log In';
+  }
+});
+
+// ──────────────────────────────────────────────
+// SIGNUP FORM
+// ──────────────────────────────────────────────
+document.getElementById('signup-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const workerId = document.getElementById('su-worker-id').value.trim();
+  const name     = document.getElementById('su-name').value.trim();
+  const email    = document.getElementById('su-email').value.trim();
+  const password = document.getElementById('su-password').value;
+  const phone    = document.getElementById('su-phone').value.trim();
+  const district = document.getElementById('su-district').value.trim();
+
+  const errDiv = document.getElementById('signup-error');
+  const errMsg = document.getElementById('signup-error-msg');
+  const sucDiv = document.getElementById('signup-success');
+  errDiv.classList.add('hidden');
+  sucDiv.classList.add('hidden');
+
+  if (!workerId || !name || !email || !password) {
+    errMsg.textContent = 'Worker ID, name, email, and password are required.';
+    errDiv.classList.remove('hidden');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errMsg.textContent = 'Please enter a valid email address.';
+    errDiv.classList.remove('hidden');
+    return;
+  }
+  if (password.length < 6) {
+    errMsg.textContent = 'Password must be at least 6 characters.';
+    errDiv.classList.remove('hidden');
+    return;
+  }
+
+  const btn = document.getElementById('signup-btn');
+  btn.disabled = true; btn.textContent = 'Creating…';
+
+  try {
+    const result = await apiSignup(workerId, name, password, phone || null, district || null, email);
+    if (result.success) {
+      sucDiv.classList.remove('hidden');
+      document.getElementById('signup-form').reset();
+      // Pre-fill the login form with the new Worker ID
+      document.getElementById('worker-id').value = workerId;
+      setTimeout(() => showAuthPanel('panel-login'), 1500);
+    } else {
+      errMsg.textContent = result.message || 'Signup failed.';
+      errDiv.classList.remove('hidden');
+    }
+  } catch (err) {
+    errMsg.textContent = err.message || 'Signup failed. Please try again.';
+    errDiv.classList.remove('hidden');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Create Account';
+  }
+});
+
+// ──────────────────────────────────────────────
+// FORGOT PASSWORD FORM
+// ──────────────────────────────────────────────
+document.getElementById('forgot-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const email   = document.getElementById('forgot-email').value.trim();
+  const msgDiv  = document.getElementById('forgot-msg');
+  const btn     = document.getElementById('forgot-btn');
+
+  if (!email) { msgDiv.className = 'alert alert-danger'; msgDiv.textContent = 'Email is required.'; msgDiv.classList.remove('hidden'); return; }
+
+  btn.disabled = true; btn.textContent = 'Sending…';
+  msgDiv.classList.add('hidden');
+
+  try {
+    const result = await apiRequestPasswordReset(email);
+    msgDiv.className = 'alert alert-success';
+    msgDiv.textContent = result.message || 'Reset link sent if email is registered.';
+    if (result.resetUrl) {
+      const link = document.createElement('a');
+      link.href = result.resetUrl; link.target = '_self'; link.textContent = ' Open password reset page';
+      link.style.marginLeft = '8px';
+      msgDiv.appendChild(link);
+    }
+    msgDiv.classList.remove('hidden');
+  } catch (err) {
+    msgDiv.className = 'alert alert-danger';
+    msgDiv.textContent = err.message || 'Failed to send reset email.';
+    msgDiv.classList.remove('hidden');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Send Reset Link';
+  }
+});
+
+// ──────────────────────────────────────────────
+// SHOW DASHBOARD
+// ──────────────────────────────────────────────
+function showDashboard(session) {
+  document.getElementById('login-view').classList.add('hidden');
+  document.getElementById('dashboard-view').classList.remove('hidden');
+  const nameEl = document.getElementById('worker-name-display');
+  if (nameEl) nameEl.textContent = session.name || session.workerId || 'Worker';
+  loadQueue();
+  loadDashboardStats();
+}
+
+// ──────────────────────────────────────────────
+// LOGOUT
+// ──────────────────────────────────────────────
+async function handleLogout() {
+  try { await apiLogout(); } catch(e) {}
+  await clearSession();
+  document.getElementById('dashboard-view').classList.add('hidden');
+  document.getElementById('login-view').classList.remove('hidden');
+  showAuthPanel('panel-login');
+  showToast('Logged out successfully.', 'info');
+}
+
+// ──────────────────────────────────────────────
+// LOAD DASHBOARD STATS
+// ──────────────────────────────────────────────
+async function loadDashboardStats() {
+  try {
+    const stats = await apiGetDashboardStats();
+    if (stats.success) {
+      document.getElementById('stat-total').textContent     = stats.totalToday || 0;
+      document.getElementById('stat-waiting').textContent   = stats.awaitingTriage || 0;
+      document.getElementById('stat-completed').textContent = stats.completed || 0;
+      const verEl = document.getElementById('stat-verified-today');
+      if (verEl) verEl.textContent = (stats.verifiedToday || 0) + ' verified today';
+    }
+  } catch (e) {
+    // Fallback: stats will be filled from queue data
+  }
+}
+
+// ──────────────────────────────────────────────
+// LOAD PATIENT QUEUE
+// ──────────────────────────────────────────────
+async function loadQueue() {
+  const awaitingLoading = document.getElementById('awaiting-loading');
+  const awaitingTable   = document.getElementById('awaiting-table-wrapper');
+  const awaitingEmpty   = document.getElementById('awaiting-empty');
+  const awaitingTbody   = document.getElementById('awaiting-tbody');
+
+  const completedLoading = document.getElementById('completed-loading');
+  const completedTable   = document.getElementById('completed-table-wrapper');
+  const completedEmpty   = document.getElementById('completed-empty');
+  const completedTbody   = document.getElementById('completed-tbody');
+
+  // Reset
+  awaitingLoading.classList.remove('hidden');  awaitingTable.classList.add('hidden');  awaitingEmpty.classList.add('hidden');
+  completedLoading.classList.remove('hidden'); completedTable.classList.add('hidden'); completedEmpty.classList.add('hidden');
+
+  let patients = [];
+
+  try {
+    const result = await apiGetQueue();
+    patients = result.patients || [];
+  } catch (error) {
+    if (error.offline || !navigator.onLine) {
+      patients = await getAllLocalPatients();
+    } else {
+      showToast('Failed to load queue: ' + (error.message || 'Error'), 'error');
+    }
+  }
+
+  awaitingLoading.classList.add('hidden');
+  completedLoading.classList.add('hidden');
+
+  const waiting   = patients.filter(p => !p.status || p.status === 'waiting' || p.status === 'in_progress');
+  const completed = patients.filter(p => p.status === 'completed' || p.status === 'referred');
+
+  // Stats
+  document.getElementById('stat-total').textContent     = patients.length;
+  document.getElementById('stat-waiting').textContent   = waiting.length;
+  document.getElementById('stat-completed').textContent = completed.length;
+
+  // Build awaiting table
+  if (waiting.length === 0) { awaitingEmpty.classList.remove('hidden'); }
+  else {
+    awaitingTbody.innerHTML = '';
+    waiting.forEach(function (p, i) {
+      const row = buildPatientRow(p, i + 1, 'row-waiting');
+      awaitingTbody.appendChild(row);
+    });
+    awaitingTable.classList.remove('hidden');
+  }
+
+  // Build completed table
+  if (completed.length === 0) { completedEmpty.classList.remove('hidden'); }
+  else {
+    completedTbody.innerHTML = '';
+    completed.forEach(function (p, i) {
+      const row = buildPatientRow(p, i + 1, 'row-completed');
+      completedTbody.appendChild(row);
+    });
+    completedTable.classList.remove('hidden');
+  }
+}
+
+function buildPatientRow(patient, index, rowClass) {
+  let statusBadge;
+  switch (patient.status) {
+    case 'completed':  statusBadge = '<span class="badge badge-verified">✅ Completed</span>'; break;
+    case 'critical':   statusBadge = '<span class="badge badge-critical">🔴 Critical</span>'; break;
+    case 'referred':   statusBadge = '<span class="badge badge-info">🏥 Referred</span>'; break;
+    case 'in_progress':statusBadge = '<span class="badge badge-info">🔵 In Progress</span>'; break;
+    default:           statusBadge = '<span class="badge badge-muted">⏳ Waiting</span>';
+  }
+  const row = document.createElement('tr');
+  if (rowClass) row.className = rowClass;
+  row.innerHTML = `
+    <td>${index}</td>
+    <td>
+      <div class="patient-name">${escapeHtml(patient.name || 'Unknown')}</div>
+      <div class="patient-meta">${escapeHtml(patient.patientId || '')}</div>
+    </td>
+    <td>${escapeHtml(String(patient.age || '—'))} / ${escapeHtml(patient.gender || '—')}</td>
+    <td style="max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(patient.chiefComplaint || '')}">
+      ${escapeHtml((patient.chiefComplaint || '—').substring(0,60))}
+    </td>
+    <td>${statusBadge}</td>
+    <td class="text-muted" style="font-size:0.82rem;">${formatDate(patient.createdAt)}</td>
+    <td>
+      <a href="/intake.html?id=${encodeURIComponent(patient.patientId || '')}" class="btn btn-ghost btn-sm">View →</a>
+    </td>
+  `;
+  return row;
+}
+
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.appendChild(document.createTextNode(String(str)));
+  return d.innerHTML;
+}
+</script>
+</body>
+</html>
