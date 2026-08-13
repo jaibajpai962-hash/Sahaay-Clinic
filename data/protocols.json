@@ -1,0 +1,248 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-01-01",
+  "protocols": [
+    {
+      "id": "fever",
+      "title": "High Fever (>38.5°C / 101.3°F)",
+      "category": "Common Ailment",
+      "icon": "🌡️",
+      "urgency": "moderate",
+      "steps": [
+        "Keep the patient in a cool, well-ventilated room.",
+        "Remove excess clothing and blankets.",
+        "Apply a cool (not cold) damp cloth to the forehead and wrists.",
+        "Encourage the patient to drink water, ORS, or clear fluids every 15 minutes.",
+        "Monitor temperature every 30 minutes.",
+        "If fever exceeds 40°C (104°F) or lasts more than 3 days, escalate to doctor immediately."
+      ],
+      "otc_medications": [
+        {
+          "name": "Paracetamol (Acetaminophen)",
+          "adult_dose": "500mg–1000mg every 4–6 hours (max 4g/day)",
+          "child_dose": "10–15 mg/kg every 4–6 hours",
+          "warning": "Do NOT exceed stated dose. Avoid in liver disease."
+        }
+      ],
+      "red_flags": [
+        "Stiff neck",
+        "Severe headache",
+        "Rash",
+        "Confusion",
+        "Difficulty breathing"
+      ],
+      "refer_if": "Fever > 40°C, or any red flag symptom present, or no improvement after 2 days."
+    },
+    {
+      "id": "wound",
+      "title": "Minor Cuts & Wounds",
+      "category": "First Aid",
+      "icon": "🩹",
+      "urgency": "low",
+      "steps": [
+        "Wash your hands thoroughly with soap and water before touching the wound.",
+        "Apply gentle pressure with a clean cloth to stop bleeding (hold for 5–10 minutes).",
+        "Once bleeding stops, rinse the wound under clean running water for 5 minutes.",
+        "Gently clean around the wound with an antiseptic wipe (from outer edge inward).",
+        "Apply antiseptic cream (e.g., Betadine) to the wound.",
+        "Cover with a sterile adhesive bandage or dressing.",
+        "Change dressing daily or when wet/dirty.",
+        "Check for signs of infection daily (redness, warmth, pus, swelling)."
+      ],
+      "otc_medications": [
+        {
+          "name": "Povidone-Iodine (Betadine) solution/ointment",
+          "adult_dose": "Apply topically to clean wound 1–2 times daily",
+          "child_dose": "Same as adult — avoid on newborns",
+          "warning": "Do not use inside deep puncture wounds."
+        }
+      ],
+      "red_flags": [
+        "Deep or gaping wound (may need stitches)",
+        "Wound caused by an animal bite",
+        "Signs of infection after 48 hrs",
+        "Tetanus risk (dirty/rusty object)"
+      ],
+      "refer_if": "Wound is deep, won't stop bleeding after 10 minutes, or shows infection signs."
+    },
+    {
+      "id": "dehydration",
+      "title": "Dehydration / Diarrhoea",
+      "category": "Common Ailment",
+      "icon": "💧",
+      "urgency": "moderate",
+      "steps": [
+        "Assess severity: mild (thirsty), moderate (dry mouth, less urine), severe (sunken eyes, confusion).",
+        "For mild/moderate: Begin Oral Rehydration Solution (ORS) immediately.",
+        "ORS preparation: 1 litre of safe/boiled water + 6 teaspoons sugar + 1/2 teaspoon salt.",
+        "Adult: Give 200–400ml ORS after each loose stool.",
+        "Child under 5: Give 75ml/kg ORS over 4 hours.",
+        "Continue normal feeding. Breastfeeding mothers should continue.",
+        "Do NOT give anti-diarrhoeal drugs to children under 5.",
+        "Monitor urine output — improvement means treatment is working."
+      ],
+      "otc_medications": [
+        {
+          "name": "ORS Sachet (WHO formula)",
+          "adult_dose": "1 sachet dissolved in 1L water. 200–400ml after each stool.",
+          "child_dose": "75ml/kg in first 4 hours, then 10ml/kg after each stool",
+          "warning": "Always use safe water. Discard prepared solution after 24 hours."
+        },
+        {
+          "name": "Zinc Sulfate (for children)",
+          "adult_dose": "Not recommended",
+          "child_dose": "Under 6 months: 10mg/day for 10–14 days. Over 6 months: 20mg/day for 10–14 days",
+          "warning": "Zinc reduces diarrhoea duration in children. Do not overdose."
+        }
+      ],
+      "red_flags": [
+        "Bloody diarrhoea",
+        "Sunken eyes or fontanelle (in infants)",
+        "Inability to drink",
+        "High fever",
+        "Severe lethargy/unconsciousness"
+      ],
+      "refer_if": "Severe dehydration, bloody stool, child unable to drink, or no improvement in 24 hours."
+    },
+    {
+      "id": "burn",
+      "title": "Minor Burns (1st Degree)",
+      "category": "First Aid",
+      "icon": "🔥",
+      "urgency": "moderate",
+      "steps": [
+        "IMMEDIATELY cool the burn: run cool (NOT ice cold) water over it for 10–20 minutes.",
+        "Remove jewellery or tight clothing near the burn BEFORE swelling starts.",
+        "Do NOT apply butter, oil, toothpaste, or ice — these worsen the burn.",
+        "After cooling, cover loosely with a clean non-stick bandage or cling film.",
+        "Give pain relief if needed (paracetamol).",
+        "Keep the wound clean and dry. Change dressing daily.",
+        "Do NOT break any blisters — this increases infection risk."
+      ],
+      "otc_medications": [
+        {
+          "name": "Paracetamol",
+          "adult_dose": "500mg–1000mg every 4–6 hours for pain",
+          "child_dose": "10–15 mg/kg every 4–6 hours",
+          "warning": "For pain management only. Seek care for large or deep burns."
+        }
+      ],
+      "red_flags": [
+        "Burn larger than palm of hand",
+        "Burn on face, hands, feet, genitals, or joints",
+        "Blisters covering large area",
+        "Deep white/charred wound (3rd degree)",
+        "Chemical or electrical burn"
+      ],
+      "refer_if": "Any burn larger than a 5cm diameter, or ANY 2nd/3rd degree burn, or burns on sensitive areas."
+    },
+    {
+      "id": "snake_bite",
+      "title": "Snake Bite Emergency",
+      "category": "Emergency",
+      "icon": "🐍",
+      "urgency": "critical",
+      "steps": [
+        "KEEP THE PATIENT CALM AND STILL. Movement spreads venom faster.",
+        "Lay the patient down with the bitten limb BELOW the level of the heart.",
+        "Remove rings, watches, or tight clothing near the bite site immediately.",
+        "Clean the bite area gently with soap and water if available.",
+        "Immobilise the bitten limb using a splint or improvised sling.",
+        "DO NOT cut the wound, suck out venom, apply tourniquet, or apply ice.",
+        "Mark the edge of swelling with a pen and note the time.",
+        "TRANSPORT TO HOSPITAL IMMEDIATELY — time is critical for anti-venom.",
+        "Try to note the snake description (colour, pattern) but do NOT catch or kill it."
+      ],
+      "otc_medications": [],
+      "red_flags": [
+        "Rapid swelling",
+        "Numbness or tingling",
+        "Difficulty breathing",
+        "Drooping eyelids",
+        "Bleeding from bite or other sites",
+        "Vomiting",
+        "Unconsciousness"
+      ],
+      "refer_if": "ALL snake bites must be referred to a hospital immediately, regardless of symptoms."
+    },
+    {
+      "id": "choking",
+      "title": "Choking (Airway Obstruction)",
+      "category": "Emergency",
+      "icon": "🫁",
+      "urgency": "critical",
+      "steps": [
+        "Ask loudly: 'Are you choking?' If they can speak or cough — encourage them to keep coughing.",
+        "If they CANNOT speak, cough, or breathe — ACT IMMEDIATELY.",
+        "Stand behind the person and lean them slightly forward.",
+        "Give 5 firm back blows between the shoulder blades with heel of your hand.",
+        "If back blows fail, perform 5 ABDOMINAL THRUSTS (Heimlich Manoeuvre):",
+        "  → Stand behind them. Place fist (thumb-side in) just above navel.",
+        "  → Grab fist with other hand. Give 5 sharp inward-and-upward thrusts.",
+        "Alternate 5 back blows and 5 abdominal thrusts until object clears or patient loses consciousness.",
+        "If unconscious: Lower carefully to floor and begin CPR. Call for emergency help."
+      ],
+      "otc_medications": [],
+      "red_flags": [
+        "Patient becomes blue (cyanosis)",
+        "Patient loses consciousness",
+        "Object not clearing after multiple attempts"
+      ],
+      "refer_if": "If object does not clear after 3–4 cycles of back blows and abdominal thrusts — emergency transport immediately."
+    },
+    {
+      "id": "malaria_suspect",
+      "title": "Suspected Malaria",
+      "category": "Common Ailment",
+      "icon": "🦟",
+      "urgency": "high",
+      "steps": [
+        "Conduct Rapid Diagnostic Test (RDT) if available in the clinic kit.",
+        "Document symptoms: cyclical fever, chills, headache, muscle aches, nausea.",
+        "Keep patient cool and hydrated (ORS or water).",
+        "Give Paracetamol for fever and pain management.",
+        "Do NOT start anti-malarial drugs without confirming diagnosis via RDT or lab.",
+        "Refer patient to doctor for confirmed diagnosis and treatment plan.",
+        "Educate patient/family on mosquito bite prevention."
+      ],
+      "otc_medications": [
+        {
+          "name": "Paracetamol (symptomatic relief only)",
+          "adult_dose": "500mg–1000mg every 4–6 hours for fever/pain",
+          "child_dose": "10–15 mg/kg every 4–6 hours",
+          "warning": "Paracetamol manages symptoms ONLY. Anti-malarials require a doctor's prescription."
+        }
+      ],
+      "red_flags": [
+        "Altered consciousness or confusion",
+        "Severe anaemia (pale, very weak)",
+        "Respiratory distress",
+        "Repeated vomiting",
+        "Convulsions/seizures",
+        "Inability to sit unsupported"
+      ],
+      "refer_if": "Positive RDT result, severe symptoms, young children, pregnant women — IMMEDIATE referral."
+    },
+    {
+      "_ai_generated": false,
+      "category": "Common Ailment",
+      "icon": "🏥",
+      "id": "fever_me_kiya_kare",
+      "otc_medications": [],
+      "red_flags": [
+        "High fever (>40°C)",
+        "Difficulty breathing",
+        "Loss of consciousness"
+      ],
+      "refer_if": "Symptoms persist beyond 48 hours or any red flag sign is present.",
+      "steps": [
+        "Keep patient calm and comfortable.",
+        "Monitor vital signs (temperature, pulse, breathing).",
+        "Ensure patient is well hydrated.",
+        "If symptoms worsen or do not improve in 24 hours, seek medical attention."
+      ],
+      "title": "Fever Me Kiya Kare",
+      "urgency": "moderate"
+    }
+  ]
+}
