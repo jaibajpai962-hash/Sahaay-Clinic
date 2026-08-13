@@ -1,0 +1,62 @@
+2026-08-13 13:06:04,406 [INFO] sahaay.config: Configuration loaded from: D:\work like collage\program\hackathon\sahaay-clinic-gemini-v5-media-doctor-review\sahaay_new - Copy\.env
+2026-08-13 13:06:04,406 [INFO] sahaay.config: Environment: development
+2026-08-13 13:06:04,406 [INFO] sahaay.config: Database host: localhost
+2026-08-13 13:06:04,406 [INFO] sahaay.config: Database port: 3306
+2026-08-13 13:06:04,407 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 13:06:04,407 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 13:06:04,407 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 13:06:04,539 [INFO] app: MySQL database initialized and schema migrated successfully.
+2026-08-13 13:06:04,606 [INFO] app: Sahaay Clinic backend started — Sahaay Clinic
+2026-08-13 13:17:48,777 [INFO] sahaay.config: Configuration loaded from: D:\work like collage\program\hackathon\sahaay-clinic-gemini-v5-media-doctor-review\sahaay_new - Copy\.env
+2026-08-13 13:17:48,778 [INFO] sahaay.config: Environment: development
+2026-08-13 13:17:48,778 [INFO] sahaay.config: Database host: localhost
+2026-08-13 13:17:48,778 [INFO] sahaay.config: Database port: 3306
+2026-08-13 13:17:48,779 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 13:17:48,779 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 13:17:48,779 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 13:17:49,122 [INFO] app: MySQL database initialized and schema migrated successfully.
+2026-08-13 13:17:49,199 [INFO] app: Sahaay Clinic backend started — Sahaay Clinic
+2026-08-13 13:17:49,299 [ERROR] sahaay.auth: Login error: 1054 (42S22): Unknown column 'worker_id' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'worker_id' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\work like collage\program\hackathon\sahaay-clinic-gemini-v5-media-doctor-review\sahaay_new - Copy\backend\routes\auth.py", line 419, in login
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        """
+        ^^^
+    ...<17 lines>...
+        (worker_id,)
+        ^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'worker_id' in 'field list'
