@@ -1,0 +1,2522 @@
+2026-08-13 11:48:54,242 [INFO] sahaay.config: Configuration loaded from: d:\work like collage\program\hackathon\sahaay_new\.env
+2026-08-13 11:48:54,243 [INFO] sahaay.config: Environment: development
+2026-08-13 11:48:54,243 [INFO] sahaay.config: Database host: localhost
+2026-08-13 11:48:54,243 [INFO] sahaay.config: Database port: 3306
+2026-08-13 11:48:54,244 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 11:48:54,244 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 11:48:54,244 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 11:48:54,519 [INFO] app: MySQL database initialized and schema migrated successfully.
+2026-08-13 11:48:54,649 [INFO] app: Sahaay Clinic backend started — Sahaay Clinic
+2026-08-13 11:48:54,694 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.137.8:5000
+2026-08-13 11:48:54,694 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2026-08-13 11:48:54,697 [INFO] werkzeug:  * Restarting with stat
+2026-08-13 11:48:55,304 [INFO] sahaay.config: Configuration loaded from: d:\work like collage\program\hackathon\sahaay_new\.env
+2026-08-13 11:48:55,305 [INFO] sahaay.config: Environment: development
+2026-08-13 11:48:55,305 [INFO] sahaay.config: Database host: localhost
+2026-08-13 11:48:55,305 [INFO] sahaay.config: Database port: 3306
+2026-08-13 11:48:55,306 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 11:48:55,306 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 11:48:55,306 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 11:48:55,521 [INFO] app: MySQL database initialized and schema migrated successfully.
+2026-08-13 11:48:55,619 [INFO] app: Sahaay Clinic backend started — Sahaay Clinic
+2026-08-13 11:48:55,650 [WARNING] werkzeug:  * Debugger is active!
+2026-08-13 11:48:55,654 [INFO] werkzeug:  * Debugger PIN: 949-900-488
+2026-08-13 11:48:59,561 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:48:59] "GET /sw.js HTTP/1.1" 200 -
+2026-08-13 11:49:02,318 [ERROR] sahaay.firstaid: Gemini first-aid analysis failed: HTTP Error 404: Not Found
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\firstaid_ai.py", line 103, in _analyze_with_gemini
+    with urllib_req.urlopen(req, timeout=30) as resp:
+         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\urllib\request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\urllib\request.py", line 493, in open
+    response = meth(req, response)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\urllib\request.py", line 602, in http_response
+    response = self.parent.error(
+        'http', request, response, code, msg, hdrs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\urllib\request.py", line 531, in error
+    return self._call_chain(*args)
+           ~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\urllib\request.py", line 464, in _call_chain
+    result = func(*args)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\urllib\request.py", line 611, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found
+2026-08-13 11:49:02,325 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:49:02] "POST /api/v1/firstaid/analyze HTTP/1.1" 200 -
+2026-08-13 11:49:03,810 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:49:03] "POST /api/v1/firstaid/save HTTP/1.1" 200 -
+2026-08-13 11:49:11,918 [ERROR] sahaay.patients: Failed to load patient queue: 1054 (42S22): Unknown column 'village' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'village' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\patients.py", line 434, in get_queue
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'village' in 'field list'
+2026-08-13 11:49:11,921 [ERROR] sahaay.doctor_profile: dashboard_stats error: 1054 (42S22): Unknown column 'status' in 'where clause'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'status' in 'where clause'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor_profile.py", line 360, in dashboard_stats
+    cursor.execute("SELECT COUNT(*) AS cnt FROM patients WHERE status='waiting'")
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'status' in 'where clause'
+2026-08-13 11:49:11,925 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:49:11] "[35m[1mGET /api/v1/patients/queue HTTP/1.1[0m" 500 -
+2026-08-13 11:49:11,928 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:49:11] "[35m[1mGET /api/v1/doctor/dashboard_stats HTTP/1.1[0m" 500 -
+2026-08-13 11:49:13,546 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:49:13] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 11:49:15,108 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:49:15] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 11:49:29,776 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:49:29] "[35m[1mPOST /api/v1/patients/upload_media HTTP/1.1[0m" 201 -
+2026-08-13 11:49:29,801 [ERROR] sahaay.patients: Failed to register patient: 1054 (42S22): Unknown column 'village' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'village' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\patients.py", line 758, in register_patient
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        """
+        ^^^
+    ...<45 lines>...
+        )
+        ^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'village' in 'field list'
+2026-08-13 11:49:29,805 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:49:29] "[35m[1mPOST /api/v1/patients/register HTTP/1.1[0m" 500 -
+2026-08-13 11:54:14,004 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:54:14] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 11:54:16,523 [INFO] sahaay.config: Configuration loaded from: d:\work like collage\program\hackathon\sahaay_new\.env
+2026-08-13 11:54:16,523 [INFO] sahaay.config: Environment: development
+2026-08-13 11:54:16,523 [INFO] sahaay.config: Database host: localhost
+2026-08-13 11:54:16,524 [INFO] sahaay.config: Database port: 3306
+2026-08-13 11:54:16,524 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 11:54:16,524 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 11:54:16,524 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 11:54:16,652 [INFO] app: MySQL database initialized and schema migrated successfully.
+2026-08-13 11:54:16,700 [INFO] app: Sahaay Clinic backend started — Sahaay Clinic
+2026-08-13 11:54:16,727 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.137.8:5000
+2026-08-13 11:54:16,728 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2026-08-13 11:54:16,729 [INFO] werkzeug:  * Restarting with stat
+2026-08-13 11:54:17,034 [INFO] sahaay.config: Configuration loaded from: d:\work like collage\program\hackathon\sahaay_new\.env
+2026-08-13 11:54:17,034 [INFO] sahaay.config: Environment: development
+2026-08-13 11:54:17,034 [INFO] sahaay.config: Database host: localhost
+2026-08-13 11:54:17,035 [INFO] sahaay.config: Database port: 3306
+2026-08-13 11:54:17,035 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 11:54:17,035 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 11:54:17,035 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 11:54:17,149 [INFO] app: MySQL database initialized and schema migrated successfully.
+2026-08-13 11:54:17,194 [INFO] app: Sahaay Clinic backend started — Sahaay Clinic
+2026-08-13 11:54:17,211 [WARNING] werkzeug:  * Debugger is active!
+2026-08-13 11:54:17,214 [INFO] werkzeug:  * Debugger PIN: 949-900-488
+2026-08-13 11:54:20,497 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:54:20] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 11:54:32,290 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:54:32] "[35m[1mPOST /api/v1/patients/upload_media HTTP/1.1[0m" 201 -
+2026-08-13 11:54:32,314 [ERROR] sahaay.patients: Failed to register patient: 1054 (42S22): Unknown column 'village' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'village' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\patients.py", line 758, in register_patient
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        """
+        ^^^
+    ...<45 lines>...
+        )
+        ^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'village' in 'field list'
+2026-08-13 11:54:32,321 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:54:32] "[35m[1mPOST /api/v1/patients/register HTTP/1.1[0m" 500 -
+2026-08-13 11:56:38,643 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:56:38] "[35m[1mPOST /api/v1/patients/upload_media HTTP/1.1[0m" 201 -
+2026-08-13 11:56:38,664 [ERROR] sahaay.patients: Failed to register patient: 1146 (42S02): Table 'sahaay_clinic.patients' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'sahaay_clinic.patients' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\patients.py", line 758, in register_patient
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        """
+        ^^^
+    ...<45 lines>...
+        )
+        ^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'sahaay_clinic.patients' doesn't exist
+2026-08-13 11:56:38,668 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:56:38] "[35m[1mPOST /api/v1/patients/register HTTP/1.1[0m" 500 -
+2026-08-13 11:56:41,935 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:56:41] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 11:57:04,085 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:57:04] "[35m[1mPOST /api/v1/patients/upload_media HTTP/1.1[0m" 201 -
+2026-08-13 11:57:04,106 [ERROR] sahaay.patients: Failed to register patient: 1146 (42S02): Table 'sahaay_clinic.patients' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'sahaay_clinic.patients' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\patients.py", line 758, in register_patient
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        """
+        ^^^
+    ...<45 lines>...
+        )
+        ^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'sahaay_clinic.patients' doesn't exist
+2026-08-13 11:57:04,109 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:57:04] "[35m[1mPOST /api/v1/patients/register HTTP/1.1[0m" 500 -
+2026-08-13 11:57:57,601 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:57:57] "[35m[1mPOST /api/v1/patients/upload_media HTTP/1.1[0m" 201 -
+2026-08-13 11:57:57,625 [ERROR] sahaay.patients: Failed to register patient: 1146 (42S02): Table 'sahaay_clinic.patients' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'sahaay_clinic.patients' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\patients.py", line 758, in register_patient
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        """
+        ^^^
+    ...<45 lines>...
+        )
+        ^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'sahaay_clinic.patients' doesn't exist
+2026-08-13 11:57:57,628 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:57:57] "[35m[1mPOST /api/v1/patients/register HTTP/1.1[0m" 500 -
+2026-08-13 11:57:58,602 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:57:58] "[35m[1mPOST /api/v1/patients/upload_media HTTP/1.1[0m" 201 -
+2026-08-13 11:57:58,623 [ERROR] sahaay.patients: Failed to register patient: 1146 (42S02): Table 'sahaay_clinic.patients' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'sahaay_clinic.patients' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\patients.py", line 758, in register_patient
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        """
+        ^^^
+    ...<45 lines>...
+        )
+        ^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'sahaay_clinic.patients' doesn't exist
+2026-08-13 11:57:58,627 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 11:57:58] "[35m[1mPOST /api/v1/patients/register HTTP/1.1[0m" 500 -
+2026-08-13 12:07:43,888 [INFO] sahaay.config: Configuration loaded from: d:\work like collage\program\hackathon\sahaay_new\.env
+2026-08-13 12:07:43,889 [INFO] sahaay.config: Environment: development
+2026-08-13 12:07:43,889 [INFO] sahaay.config: Database host: localhost
+2026-08-13 12:07:43,889 [INFO] sahaay.config: Database port: 3306
+2026-08-13 12:07:43,889 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 12:07:43,889 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 12:07:43,889 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 12:07:44,410 [INFO] app: MySQL database initialized and schema migrated successfully.
+2026-08-13 12:07:44,507 [INFO] app: Sahaay Clinic backend started — Sahaay Clinic
+2026-08-13 12:07:44,532 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.178.210.60:5000
+2026-08-13 12:07:44,533 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2026-08-13 12:07:44,534 [INFO] werkzeug:  * Restarting with stat
+2026-08-13 12:07:44,845 [INFO] sahaay.config: Configuration loaded from: d:\work like collage\program\hackathon\sahaay_new\.env
+2026-08-13 12:07:44,846 [INFO] sahaay.config: Environment: development
+2026-08-13 12:07:44,846 [INFO] sahaay.config: Database host: localhost
+2026-08-13 12:07:44,846 [INFO] sahaay.config: Database port: 3306
+2026-08-13 12:07:44,846 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 12:07:44,846 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 12:07:44,847 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 12:07:44,965 [INFO] app: MySQL database initialized and schema migrated successfully.
+2026-08-13 12:07:45,019 [INFO] app: Sahaay Clinic backend started — Sahaay Clinic
+2026-08-13 12:07:45,040 [WARNING] werkzeug:  * Debugger is active!
+2026-08-13 12:07:45,043 [INFO] werkzeug:  * Debugger PIN: 949-900-488
+2026-08-13 12:07:51,189 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:07:51] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 12:07:51,193 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:07:51] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 12:07:52,892 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:07:52] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:07:53,860 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:07:53] "POST /api/v1/auth/logout HTTP/1.1" 200 -
+2026-08-13 12:07:59,459 [ERROR] sahaay.auth: Login error: 1054 (42S22): Unknown column 'worker_id' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'worker_id' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\auth.py", line 419, in login
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        """
+        ^^^
+    ...<17 lines>...
+        (worker_id,)
+        ^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'worker_id' in 'field list'
+2026-08-13 12:07:59,465 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:07:59] "[35m[1mPOST /api/v1/auth/login HTTP/1.1[0m" 500 -
+2026-08-13 12:07:59,489 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:07:59] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 12:07:59,491 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:07:59] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 12:08:03,237 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:08:03] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:08:09,443 [ERROR] sahaay.patients: Failed to create patient audit log: 1054 (42S22): Unknown column 'performed_by' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'performed_by' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\patients.py", line 844, in register_patient
+    AuditLog.create(
+    ~~~~~~~~~~~~~~~^
+        action="patient.registered",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        }
+        ^
+    )
+    ^
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\models.py", line 1403, in create
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        INSERT INTO audit_logs
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        _json(details)
+        ^^^^^^^^^^^^^^
+    ))
+    ^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'performed_by' in 'field list'
+2026-08-13 12:08:09,459 [INFO] sahaay.patients: Patient registered: SAH-MH-TJP3RL-MMB (DSFSD)
+2026-08-13 12:08:09,461 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:08:09] "[35m[1mPOST /api/v1/patients/register HTTP/1.1[0m" 201 -
+2026-08-13 12:08:40,260 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:08:40] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:08:48,281 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:08:48] "POST /api/v1/firstaid/analyze HTTP/1.1" 200 -
+2026-08-13 12:08:49,326 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:08:49] "POST /api/v1/firstaid/save HTTP/1.1" 200 -
+2026-08-13 12:08:51,722 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:08:51,725 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:08:51] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:08:51,747 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 12:08:51,752 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:08:51] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 12:08:53,262 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:08:53] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:08:53,660 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:08:53,663 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:08:53] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:09:08,093 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:09:08,096 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:09:08] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:09:31,147 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:09:31] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 12:09:31,149 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:09:31] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 12:09:32,711 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:09:32] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:09:34,078 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:09:34] "GET /intake.html?id=SAH-MH-TJP3RL-MMB HTTP/1.1" 200 -
+2026-08-13 12:09:34,458 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:09:34] "GET /api/v1/patients/SAH-MH-TJP3RL-MMB HTTP/1.1" 200 -
+2026-08-13 12:09:35,969 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:09:35] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:09:49,312 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:09:49] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 12:09:49,317 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:09:49] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 12:09:50,294 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:09:50] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 12:09:50,296 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:09:50] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 12:09:52,741 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:09:52] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:11:09,394 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:11:09] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:11:31,904 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:11:31] "[35m[1mPOST /api/v1/doctor/register HTTP/1.1[0m" 500 -
+2026-08-13 12:11:31,930 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:11:31,933 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:11:31] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:11:31,951 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 12:11:31,953 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:11:31] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 12:11:34,005 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:11:34,008 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:11:34] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:13:10,002 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:13:10,006 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:13:10] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:13:10,025 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 12:13:10,029 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:13:10] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 12:13:11,334 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:13:11,338 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:13:11] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:13:11,549 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:13:11] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:13:11,762 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:13:11,764 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:13:11] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:13:11,960 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:13:11,963 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:13:11] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:13:12,164 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:13:12,167 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:13:12] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:14:24,229 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:14:24,233 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:24] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:14:24,255 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 12:14:24,259 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:24] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 12:14:25,800 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:25] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:14:27,747 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:27] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 12:14:27,749 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:27] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 12:14:28,087 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:28] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:14:29,322 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:29] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:14:32,712 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:32] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:14:35,613 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:35] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:14:37,033 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:37] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:14:43,209 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:43] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:14:48,164 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:48] "POST /api/v1/firstaid/analyze HTTP/1.1" 200 -
+2026-08-13 12:14:52,568 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:14:52,570 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:52] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:14:52,592 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 12:14:52,596 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:52] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 12:14:54,107 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:54] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:14:56,427 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:14:56] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:19:27,967 [INFO] werkzeug:  * Detected change in 'd:\\work like collage\\program\\hackathon\\sahaay_new\\backend\\database.py', reloading
+2026-08-13 12:19:28,019 [INFO] werkzeug:  * Restarting with stat
+2026-08-13 12:19:28,355 [INFO] sahaay.config: Configuration loaded from: d:\work like collage\program\hackathon\sahaay_new\.env
+2026-08-13 12:19:28,356 [INFO] sahaay.config: Environment: development
+2026-08-13 12:19:28,356 [INFO] sahaay.config: Database host: localhost
+2026-08-13 12:19:28,356 [INFO] sahaay.config: Database port: 3306
+2026-08-13 12:19:28,356 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 12:19:28,356 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 12:19:28,356 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 12:19:28,394 [CRITICAL] app: MySQL initialization failed: name 'get_db' is not defined
+2026-08-13 12:23:42,888 [INFO] sahaay.config: Configuration loaded from: d:\work like collage\program\hackathon\sahaay_new\.env
+2026-08-13 12:23:42,888 [INFO] sahaay.config: Environment: development
+2026-08-13 12:23:42,888 [INFO] sahaay.config: Database host: localhost
+2026-08-13 12:23:42,888 [INFO] sahaay.config: Database port: 3306
+2026-08-13 12:23:42,888 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 12:23:42,889 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 12:23:42,889 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 12:23:42,923 [CRITICAL] app: MySQL initialization failed: name 'get_db' is not defined
+2026-08-13 12:32:20,266 [INFO] sahaay.config: Configuration loaded from: d:\work like collage\program\hackathon\sahaay_new\.env
+2026-08-13 12:32:20,266 [INFO] sahaay.config: Environment: development
+2026-08-13 12:32:20,266 [INFO] sahaay.config: Database host: localhost
+2026-08-13 12:32:20,267 [INFO] sahaay.config: Database port: 3306
+2026-08-13 12:32:20,267 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 12:32:20,267 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 12:32:20,267 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 12:35:08,745 [INFO] sahaay.config: Configuration loaded from: d:\work like collage\program\hackathon\sahaay_new\.env
+2026-08-13 12:35:08,746 [INFO] sahaay.config: Environment: development
+2026-08-13 12:35:08,746 [INFO] sahaay.config: Database host: localhost
+2026-08-13 12:35:08,746 [INFO] sahaay.config: Database port: 3306
+2026-08-13 12:35:08,746 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 12:35:08,746 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 12:35:08,747 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 12:35:08,913 [INFO] app: MySQL database initialized and schema migrated successfully.
+2026-08-13 12:35:08,981 [INFO] app: Sahaay Clinic backend started — Sahaay Clinic
+2026-08-13 12:35:09,006 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.178.210.60:5000
+2026-08-13 12:35:09,006 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2026-08-13 12:35:09,008 [INFO] werkzeug:  * Restarting with stat
+2026-08-13 12:35:09,298 [INFO] sahaay.config: Configuration loaded from: d:\work like collage\program\hackathon\sahaay_new\.env
+2026-08-13 12:35:09,298 [INFO] sahaay.config: Environment: development
+2026-08-13 12:35:09,299 [INFO] sahaay.config: Database host: localhost
+2026-08-13 12:35:09,299 [INFO] sahaay.config: Database port: 3306
+2026-08-13 12:35:09,299 [INFO] sahaay.config: Database name: sahaay_clinic
+2026-08-13 12:35:09,299 [INFO] sahaay.config: AI model: models/gemini-3.1-flash-lite
+2026-08-13 12:35:09,299 [INFO] sahaay.config: SMS enabled: True
+2026-08-13 12:35:09,414 [INFO] app: MySQL database initialized and schema migrated successfully.
+2026-08-13 12:35:09,461 [INFO] app: Sahaay Clinic backend started — Sahaay Clinic
+2026-08-13 12:35:09,476 [WARNING] werkzeug:  * Debugger is active!
+2026-08-13 12:35:09,479 [INFO] werkzeug:  * Debugger PIN: 949-900-488
+2026-08-13 12:35:17,794 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:35:17] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 12:35:17,795 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:35:17] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 12:35:19,411 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:35:19] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:35:21,383 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:35:21,388 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:35:21] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:35:21,408 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 12:35:21,412 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:35:21] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 12:35:22,937 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:35:22] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:35:27,767 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:35:27,770 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:35:27] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:35:30,639 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:35:30] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-08-13 12:35:37,806 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:35:37] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-08-13 12:35:38,128 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:35:38,132 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:35:38] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:35:38,155 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 12:35:38,158 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:35:38] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 12:35:39,708 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:35:39] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:52:06,756 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:52:06,760 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:06] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:52:06,781 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 12:52:06,785 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:06] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 12:52:08,312 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:08] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:52:11,723 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:11] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 12:52:11,724 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:11] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 12:52:13,282 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:13] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:52:14,987 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:14] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 12:52:14,989 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:14] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 12:52:16,556 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:16] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:52:16,683 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:52:16,687 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:16] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:52:16,706 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 12:52:16,710 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:16] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 12:52:17,780 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:52:17,783 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:17] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:52:17,807 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 12:52:17,810 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:17] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 12:52:18,225 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:18] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:52:19,326 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:19] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:52:20,763 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:20] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 12:52:20,765 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:20] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 12:52:22,332 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:22] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:52:48,520 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:52:48] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:53:22,544 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:53:22] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-08-13 12:53:53,511 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:53:53] "[35m[1mPOST /api/v1/patients/upload_media HTTP/1.1[0m" 201 -
+2026-08-13 12:53:53,553 [ERROR] sahaay.patients: Failed to create patient audit log: 1054 (42S22): Unknown column 'performed_by' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'performed_by' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\patients.py", line 844, in register_patient
+    AuditLog.create(
+    ~~~~~~~~~~~~~~~^
+        action="patient.registered",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        }
+        ^
+    )
+    ^
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\models.py", line 1403, in create
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        INSERT INTO audit_logs
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        _json(details)
+        ^^^^^^^^^^^^^^
+    ))
+    ^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'performed_by' in 'field list'
+2026-08-13 12:53:53,574 [INFO] sahaay.patients: Patient registered: SAH-MH-TJP5VT-4IA (hguhbnn)
+2026-08-13 12:53:53,576 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:53:53] "[35m[1mPOST /api/v1/patients/register HTTP/1.1[0m" 201 -
+2026-08-13 12:55:12,878 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:55:12] "[35m[1mPOST /api/v1/patients/upload_media HTTP/1.1[0m" 201 -
+2026-08-13 12:55:12,934 [ERROR] sahaay.patients: Failed to create patient audit log: 1054 (42S22): Unknown column 'performed_by' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'performed_by' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\patients.py", line 844, in register_patient
+    AuditLog.create(
+    ~~~~~~~~~~~~~~~^
+        action="patient.registered",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        }
+        ^
+    )
+    ^
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\models.py", line 1403, in create
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        INSERT INTO audit_logs
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        _json(details)
+        ^^^^^^^^^^^^^^
+    ))
+    ^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'performed_by' in 'field list'
+2026-08-13 12:55:12,951 [INFO] sahaay.patients: Patient registered: SAH-MH-TJP5Y0-GK1 (hguhbnn)
+2026-08-13 12:55:12,952 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:55:12] "[35m[1mPOST /api/v1/patients/register HTTP/1.1[0m" 201 -
+2026-08-13 12:55:20,695 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:55:20] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:55:24,128 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:55:24] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:55:29,554 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:55:29] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 12:55:29,556 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:55:29] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 12:55:31,132 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:55:31] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:55:32,728 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:55:32] "GET /api/v1/patients/SAH-MH-TJP3RL-MMB HTTP/1.1" 200 -
+2026-08-13 12:55:34,240 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:55:34] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:55:52,384 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:55:52] "[35m[1mPOST /api/v1/patients/upload_media HTTP/1.1[0m" 201 -
+2026-08-13 12:55:52,424 [ERROR] sahaay.patients: Failed to create patient audit log: 1054 (42S22): Unknown column 'performed_by' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'performed_by' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\patients.py", line 844, in register_patient
+    AuditLog.create(
+    ~~~~~~~~~~~~~~~^
+        action="patient.registered",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        }
+        ^
+    )
+    ^
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\models.py", line 1403, in create
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        INSERT INTO audit_logs
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        _json(details)
+        ^^^^^^^^^^^^^^
+    ))
+    ^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'performed_by' in 'field list'
+2026-08-13 12:55:52,441 [INFO] sahaay.patients: Patient registered: SAH-MH-TJP5Z4-Z5V (DSFSD)
+2026-08-13 12:55:52,441 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:55:52] "[35m[1mPOST /api/v1/patients/register HTTP/1.1[0m" 201 -
+2026-08-13 12:56:26,613 [ERROR] sahaay.patients: Failed to save vitals for SAH-MH-TJP5Z4-Z5V: 1054 (42S22): Unknown column 'performed_by' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'performed_by' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\patients.py", line 977, in save_vitals
+    AuditLog.create(
+    ~~~~~~~~~~~~~~~^
+        action="patient.vitals_saved", entity_type="patient", entity_id=patient_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        performed_by=get_jwt_identity(), ip_address=request.remote_addr,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        user_agent=request.headers.get("User-Agent", ""), details={"vitals": vitals}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\models.py", line 1403, in create
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        INSERT INTO audit_logs
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        _json(details)
+        ^^^^^^^^^^^^^^
+    ))
+    ^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'performed_by' in 'field list'
+2026-08-13 12:56:26,616 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:56:26] "[35m[1mPOST /api/v1/patients/SAH-MH-TJP5Z4-Z5V/vitals HTTP/1.1[0m" 500 -
+2026-08-13 12:58:14,292 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:14] "GET /api/v1/patients/SAH-MH-TJP3RL-MMB HTTP/1.1" 200 -
+2026-08-13 12:58:15,806 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:15] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:58:17,440 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:17] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 12:58:17,444 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:17] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 12:58:19,012 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:19] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:58:23,719 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:23] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:58:28,509 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:28] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:58:30,117 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:58:30,120 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:30] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:58:30,144 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 12:58:30,147 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:30] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 12:58:31,664 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:31] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 12:58:31,779 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 12:58:31,782 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:31] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 12:58:31,829 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 12:58:31,832 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:31] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 12:58:33,316 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 12:58:33] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 13:01:49,325 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 13:01:49] "GET /api/v1/patients/queue HTTP/1.1" 200 -
+2026-08-13 13:01:49,328 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 13:01:49] "GET /api/v1/doctor/dashboard_stats HTTP/1.1" 200 -
+2026-08-13 13:01:51,526 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 13:01:51] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 13:02:10,721 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 13:02:10,724 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 13:02:10] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 13:02:10,743 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 13:02:10,746 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 13:02:10] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 13:02:12,259 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 13:02:12] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 13:02:21,205 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 13:02:21] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+2026-08-13 13:02:38,052 [ERROR] sahaay.doctor: Failed to retrieve pending doctor cases: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'a.worker_id_fk' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\doctor.py", line 393, in get_pending_cases
+    cursor.execute(
+    ~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+        tuple(params)
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'a.worker_id_fk' in 'field list'
+2026-08-13 13:02:38,056 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 13:02:38] "[35m[1mGET /api/v1/doctor/pending HTTP/1.1[0m" 500 -
+2026-08-13 13:02:38,081 [ERROR] sahaay.teleconsult: Failed to fetch teleconsult sessions: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'ts.session_url' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\work like collage\program\hackathon\sahaay_new\backend\routes\teleconsult.py", line 96, in get_sessions
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        SELECT
+        ^^^^^^
+    ...<13 lines>...
+        LIMIT %s
+        ^^^^^^^^
+    """, (limit,))
+    ^^^^^^^^^^^^^^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\vinam\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'ts.session_url' in 'field list'
+2026-08-13 13:02:38,085 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 13:02:38] "[35m[1mGET /api/v1/teleconsult/sessions HTTP/1.1[0m" 500 -
+2026-08-13 13:02:39,600 [INFO] werkzeug: 127.0.0.1 - - [13/Aug/2026 13:02:39] "[36mGET /sw.js HTTP/1.1[0m" 304 -
